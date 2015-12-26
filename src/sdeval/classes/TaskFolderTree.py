@@ -39,6 +39,7 @@ class TaskFolderTree(object):
     def addCode(self,sdTable, problemInstance, cas, execCode):
         """
         This function is to add code to the tree.
+        If the Entries are None or not of type string, then nothing will be added.
 
         :param          sdTable: The name of the SD-Table the problem instance is coming from
         :type           sdTable: string
@@ -49,8 +50,14 @@ class TaskFolderTree(object):
         :param         execCode: The executable code for the computer algebra system.
         :type          execCode: string
         """
-        if not [sdTable, problemInstance,cas, execCode] in self.__paths:
-            self.__paths.append([sdTable, problemInstance,cas, execCode])
+        if ((sdTable != None) and (problemInstance != None) and
+            (cas!= None) and (execCode!=None)):
+            if (isinstance(sdTable,str) and
+                isinstance(problemInstance,str) and
+                isinstance(cas,str) and
+                isinstance(execCode,str)):
+                if not [sdTable,problemInstance,cas, execCode] in self.__paths:
+                    self.__paths.append([sdTable, problemInstance,cas,execCode])
 
     def getAllPaths(self):
         """
@@ -107,6 +114,8 @@ class TaskFolderTree(object):
           <Name of SDTable 2>
           ...
         If it is empty, the output is just the string "Empty Tree"
+        :returns: A string representation of the TaskFolderTree
+        :rtype:   string
         """
         if self.__paths == []:
             return "Empty Tree"

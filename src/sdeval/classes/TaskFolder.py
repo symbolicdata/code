@@ -1,4 +1,6 @@
 from Task import Task
+from TaskFolderTree import TaskFolderTree
+from MachineSettings import MachineSettings
 from TaskToXMLWriter import TaskToXMLWriter
 import os
 import shutil
@@ -17,6 +19,8 @@ class TaskFolder(object):
       - An executable file runTasks.py to execute the computations.
       - The machine settings for the machine, where the task shall be
         executed on.
+
+    If any one of the input parameters is not valid, the constructor raises an exception
 
     .. seealso: :mod:`Task <sdeval.classes.Task>`, :mod:`TaskFolderTree <sdeval.classes.TaskFolderTree>`
     .. moduleauthor:: Albert Heinle <albert.heinle@rwth-aachen.de>
@@ -42,7 +46,24 @@ class TaskFolder(object):
         :type     casExecFiles: TaskFolderTree
         :param machineSettings: The Machine Settings of the Machine we execute our code on
         :type  machineSettings: MachineSettings
+        :raises: IOError
         """
+        if (task==None or casExecFiles==None or machineSettings == None):
+            raise IOError("One of the input parameters to Taskfolder was None")
+        if (not isinstance(task, Task)):
+            raise IOError("The input parameter task was not of type Task")
+        if (not isinstance(casExecFiles, TaskFolderTree)):
+            raise IOError("The input parameter casExecFiles was not of type TaskFolderTree")
+        if (not isinstance(machineSettings, MachineSettings)):
+            raise IOError("The input parameter machineSettings was not of Type MachineSettings")
+        #From here on, we can assume that the Input is at least type-wise correct
+        for p in casExecFiles.getAllPaths():
+            if not p[0] in task.getAssociatedSDTables():
+                raise IOError("CasExecution was not consistent with Task")
+        for a in task.getProblemInstances():
+            for b in task.getComputerAlgebraSystems():
+                if len(filter(lambda x: x[1] == a and x[2]==b,casExecFiles.getAllPaths()))==0:
+                    raise IOError("Some of the problems from the task are not existent in the taskfoldertree")
         self.__task = task
         self.__casExecFiles = casExecFiles
         self.__machineSettings = machineSettings
@@ -93,6 +114,7 @@ class TaskFolder(object):
                 + "Some ProblemInstance"
                   + "Some computer algebra system"
                     - executablefile.sdc
+                    - template_sol.py (optional)
                   + ...
                 + ...
               + ...
@@ -100,7 +122,7 @@ class TaskFolder(object):
         :param          path: The path where the export-folder shall be saved to.
         :type           path: string
         :param xmlRessources: The interface to the XML Ressources folder
-        :type  xmlRessources: XMLRessources
+        :type  xmlRessources: XMLResources
         :raise       IOError: If the given path does not exist.
         """
         if not os.path.isdir(path):
@@ -128,11 +150,15 @@ class TaskFolder(object):
         #Making the casSources folder
         os.mkdir(os.path.join(destPath,"casSources"))
         for t in self.__casExecFiles.getAllPaths():
-            #if not os.path.isdir(os.path.join(destPath,"casSources",t[0])):
-            #   os.mkdir(os.path.join(destPath,"casSources",t[0]))
             if not os.path.isdir(os.path.join(destPath,"casSources",t[1])):
                 os.mkdir(os.path.join(destPath,"casSources",t[1]))
             os.mkdir(os.path.join(destPath,"casSources",t[1],t[2]))
             f = open(os.path.join(destPath,"casSources",t[1],t[2],"executablefile.sdc"),"w")
             f.write(t[3])
             f.close()
+            #if template_sol does exist, it will also be copied into the folder with the executable File.
+            if os.path.isfile(os.path.join(pathOfSDEval,"classes", "templates", "comp",
+                                           self.__task.getComputationProblem(),t[2],"template_sol.py")):
+                shutil.copy(os.path.join(pathOfSDEval,"classes", "templates", "comp",
+                                           self.__task.getComputationProblem(),t[2],"template_sol.py"),
+                                           os.path.join(destPath, "casSources", t[1],t[2]))

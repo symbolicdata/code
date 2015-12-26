@@ -28,9 +28,11 @@ F := GaloisField(%i);\n\
 PR := PolynomialRing(F,[%s]);\n\
 %s\n\
 I:= Ideal(PR,[%s]);\n\
-ord := MonomialGrlexOrder(%s);\n\
+ord := MonomialGrlexOrdering(%s);\n\
 B := GroebnerBasis(I,ord);\n\
+Print(\"=====Solution Begin=====\");\n\
 B;\n\
+Print(\"=====Solution End=====\");\n\
 quit;\
 " % (characteristic,
     ",".join(str("\""+v+"\"") for v in vars),

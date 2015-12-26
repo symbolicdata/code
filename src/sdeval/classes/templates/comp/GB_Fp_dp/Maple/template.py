@@ -27,8 +27,10 @@ def generateCode(vars, basis, characteristic):
 with(Groebner):\n\
 Ideal := {%s} mod %i:\n\
 ordering := grlex(%s):\n\
-Basis(Ideal, ordering):\n\
-print(B);\n\
+B := Basis(Ideal, ordering):\n\
+printf(\"=====Solution Begin=====\");\n\
+printf(\"%%a\\n\",B);\n\
+printf(\"=====Solution End=====\");\n\
 quit;\
 " % (",".join(basis),
      characteristic,

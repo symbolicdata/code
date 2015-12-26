@@ -11,7 +11,7 @@ class TaskToXMLWriter(object):
     def createXMLFromTask(self, task, xmlRessources):
         """
         Returns an XML-Representation of the Task. This representation has the following form::
-
+          <?xml version="1.0" ?>
           <task>
             <name>
               "The Taskname"
@@ -42,11 +42,12 @@ class TaskToXMLWriter(object):
               </sdtable>
               ...
             </sdtables>
+          </task>
 
         :param          task: The task we want to have the xml representation of
         :type           task: Task
         :param xmlRessources: The Folder where we can find the different SD-Tables and where we can check the entries
-        :type  xmlRessources: XMLRessources
+        :type  xmlRessources: XMLResources
         :returns:             An xml-representation of the task
         :rtype:               xml.dom.minidom.Document
         """

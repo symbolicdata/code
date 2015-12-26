@@ -70,7 +70,15 @@ class GB_Fp_dp(ComputationProblem):
         :type  associatedTable: string
         """
         if not associatedTable in self.__associatedTables:
+            if not self._checkIfValidFileName(associatedTable):
+                #Validity check of input file name
+                return False
+            #If we reach this line, everything was okay with the code.
             self.__associatedTables.append(associatedTable)
+            return True
+        else:
+            #In this case, the associated table was already in the list.
+            return True
 
     def addToComputerAlgebraSystems(self,cas):
         """
@@ -84,4 +92,12 @@ class GB_Fp_dp(ComputationProblem):
         :type  cas: string
         """
         if not cas in self.__possibleCASs:
+            if not self._checkIfValidFileName(cas):
+                #CAS name was empty or just whitespace characters.
+                #Don't change anything and return false
+                return False
+            #If we reach this line, everything was okay with the code.
             self.__possibleCASs.append(cas)
+            return True
+        else:
+            return True

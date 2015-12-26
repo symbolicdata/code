@@ -25,7 +25,9 @@ def generateCode(vars, basis):
 ring R = 0,(%s),lp;\n\
 ideal I = %s;\n\
 ideal J = std(I);\n\
+print(\"=====Solution Begin=====\");\n\
 print(J);\n\
+print(\"=====Solution End=====\");\n\
 $\
 " % (",".join(vars),",\n".join(basis))
     return result

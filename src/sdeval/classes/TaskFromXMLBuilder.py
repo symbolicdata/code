@@ -16,6 +16,7 @@ class TaskFromXMLBuilder(object):
         :param   xmlRaw: The xml-Representation of the Task.
         :type    xmlRaw: string
         :raises IOError: If something is wrong with the XMLstring this exception is raised.
+                         Alternatively, this error is raised if the Task could not be built with the respective data.
         """
         try:
             xmlTree = dom.parseString(xmlRaw)

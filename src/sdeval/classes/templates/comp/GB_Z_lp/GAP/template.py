@@ -28,7 +28,9 @@ PR := PolynomialRing(F,[%s]);\n\
 I:= Ideal(PR,[%s]);\n\
 ord := MonomialLexOrdering(%s);\n\
 B := GroebnerBasis(I,ord);\n\
+Print(\"=====Solution Begin=====\");\n\
 B;\n\
+Print(\"=====Solution End=====\");\n\
 quit;\
 " % (",".join(str("\""+v+"\"") for v in vars),
      "\n".join(vars[i] + ":= IndeterminatesOfPolynomialRing(PR)[" + str(i+1)+"];" for i in range(len(vars))),

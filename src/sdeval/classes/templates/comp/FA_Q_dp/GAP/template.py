@@ -13,10 +13,11 @@ def generateCode(vars, basis, uptoDeg):
     """
     The main function generating the GAP code for the computation of
     the Groebner basis given the input variables.
+    The input is not checked for correctness.
 
-    :param         vars: A list of variables used in the FreeAlgebra-System
+    :param         vars: A list of variables used in the FreeAlgebras-System
     :type          vars: list
-    :param        basis: The polynomials forming a basis of the FreeAlgebra-System. This input will not be checked whether
+    :param        basis: The polynomials forming a basis of the FreeAlgebras-System. This input will not be checked whether
                          there are polynomials using variables not in the list of variables.
     :type         basis: list
     :param      uptoDeg: The uptoDeg Entry.
@@ -31,13 +32,15 @@ SetInfoLevel(InfoGBNPTime,1);\n\
 F := Rationals;\n\
 A := FreeAssociativeAlgebraWithOne(F,%s);\n\
 g :=GeneratorsOfAlgebraWithOne(A);\n\
-%s;\n\
+%s\n\
 weights := [%s];\n\
 KI_gp := [%s];\n\
 KI_np :=GP2NPList(KI_gp);\n\
 GB :=SGrobnerTrunc(KI_np,%i,weights);\n\
 GBNP.ConfigPrint(%s);\n\
+Print(\"=====Solution Begin=====\");\n\
 PrintNPList(GB);\n\
+Print(\"=====Solution End=====\");\n\
 Length(GB);\n\
 quit;\
 " % (",".join(str("\""+v+"\"") for v in rev),

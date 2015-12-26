@@ -1,4 +1,5 @@
 from ProceedingsToXMLWriter import ProceedingsToXMLWriter
+from ResultedTimings import ResultedTimings
 
 class ResultedTimingsToXMLWriter(object):
     """
@@ -43,7 +44,7 @@ class ResultedTimingsToXMLWriter(object):
                   </user>
                   <sys>
                     "sys time"
-                  <sys>
+                  </sys>
                 </timings>
             </completed>
             <error>
@@ -51,11 +52,17 @@ class ResultedTimingsToXMLWriter(object):
             </error>
           </proceedings>
 
+        If resultedTimings is not a proper ResultedTimings-instance, None is returned.
+          
         :param    resultedTimings: The proceedings we want to have the xml representation of
         :type     resultedTimings: Proceedings
         :returns:                  An xml-representation of the proceedings
         :rtype:                    xml.dom.minidom.Document
         """
+        if not isinstance(resultedTimings, ResultedTimings):
+            return None
+        if resultedTimings == None:
+            return None
         writer = ProceedingsToXMLWriter()
         result = writer.createXMLFromProceedings(resultedTimings.getProceedings())
         #First the completed

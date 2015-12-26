@@ -16,10 +16,11 @@ details read the descriptions of the particular functions.
 #-------------------- Initialization Stuff --------------------
 
 from optparse import OptionParser
-from classes.XMLRessources import XMLRessources
+from classes.XMLResources import XMLResources
 from classes.Task import Task
 from classes.TaskFolderCreator import TaskFolderCreator
 from classes.MachineSettings import MachineSettings
+from classes.MachineSettingsFromXMLBuilder import MachineSettingsFromXMLBuilder
 import os
 import curses
 import string
@@ -29,34 +30,6 @@ from ncurses.sprompt import sprompt
 from ncurses.tablecols_v2 import tablecols
 from ncurses.choicer import choicer
 
-#PARSING and initializing the interface to the XMLRessources folder
-
-parser = OptionParser("create_tasks.py [options] Arguments")
-parser.add_option("-s", "--source", dest="xmldatapath", help="The complete path to XML-Data")
-                                                        #We need the loacation
-                                                        #of our XML-Data
-(opts, args) = parser.parse_args()
-
-stdxmlDataPathDir = os.path.join("..", "..", "data", "XMLResources")
-
-if (len(args) == 0): # We need at least one argument
-    if not os.path.isdir(stdxmlDataPathDir):
-        print "This program needs at least one argument"
-        sys.exit(-2)
-    else:
-        xmlDataPath = os.path.realpath(stdxmlDataPathDir)
-else:
-    xmlDataPath = os.path.realpath(args[0])
-
-xmlres = XMLRessources(xmlDataPath)
-
-#FIND OUT SUPPORTED COMPUTATION PROBLEMS:
-#They are simply the ones taht are in classes/templates/comp
-sdEvalPath = os.path.realpath(os.path.dirname(__file__))
-suppComputationProblems = filter(lambda x: os.path.isdir(os.path.join(sdEvalPath,"classes","templates","comp",x)),
-                                 os.listdir(os.path.join(sdEvalPath,"classes","templates","comp")))
-
-#-------------------- Initialization stuff ends ----------
 
 # event loop function -----------------------------------
 class messenger:
@@ -170,85 +143,138 @@ def event_loop(choices, stdscr, yoff, xoff):
 
 # -------------------- Interactive user mode --------------------
 
-# Get the computation problem we want to solve first
-print "What computation problem do you want to solve?"
-print "Possible inputs:"
-for i in range(len(suppComputationProblems)):
-  print str(i) + " " + suppComputationProblems[i]
-print str(len(suppComputationProblems)) + \
-      " What problem? I don't have a problem. Get out of my way!"
-operation = raw_input("Choose your operation(0-2): ")
-try: int(operation)
-except: operation = -1
-while int(operation) < 0 or \
-      int(operation) > len(suppComputationProblems):
-  print "\nHow dare you! This operation is not supported!"
-  print "You must type a number between 0 and 3!\n"
-  operation = raw_input("Choose another operation: ")
-  try: int(operation)
-  except: operation = -1
+if __name__=="__main__":
+    #PARSING and initializing the interface to the XMLResources folder
 
-if int(operation) == len(suppComputationProblems): sys.exit(0)
+    parser = OptionParser("create_tasks.py [options] Arguments")
+    parser.add_option("-s", "--source", dest="xmldatapath", help="The complete path to XML-Data")
+        #We need the loacation
+        #of our XML-Data
+    (opts, args) = parser.parse_args()
 
-operation = suppComputationProblems[int(operation)]
+    stdxmlDataPathDir = os.path.join("..","..","data","XMLResources")
 
-# This is from Al, I did't change it, lets hope, it is correct
-compProbInstanceModule = __import__("classes.computationproblems.%s"%operation,globals(),locals(),[operation])
-compProbInstanceClass = getattr(compProbInstanceModule,operation)
-cpInstance = compProbInstanceClass()
-piSDTables = map(lambda x: xmlres.loadSDTable(x),cpInstance.getAssociatedTables())
-chosenProblemInstances = []
-completeProblemList = []
-for x in piSDTables:
-    completeProblemList += x.listEntries()
-flag = True
+    if (len(args) == 0): # We need at least one argument
+        if not os.path.isdir(stdxmlDataPathDir):
+            print "This program needs at least one argument"
+            sys.exit(-2)
+        else:
+            xmlDataPath = os.path.realpath(stdxmlDataPathDir)
+    else:
+        xmlDataPath = os.path.realpath(args[0])
 
-# Now we use curses for a better handling of user input
-stdscr = curses.initscr()
-curses.noecho(); curses.cbreak(); stdscr.keypad(1)
+    xmlres = XMLResources(xmlDataPath)
 
-scrh,scrw = stdscr.getmaxyx()
+    #FIND OUT SUPPORTED COMPUTATION PROBLEMS:
+    #They are simply the ones taht are in classes/templates/comp
+    sdEvalPath = os.path.realpath(os.path.dirname(__file__))
+    suppComputationProblems = filter(lambda x: os.path.isdir(os.path.join(sdEvalPath,"classes","templates","comp",x)),
+                                     os.listdir(os.path.join(sdEvalPath,"classes","templates","comp")))
+    #-------------------- Initialization stuff ends ----------
+    # Get the computation problem we want to solve first
+    print "What computation problem do you want to solve?"
+    print "Possible inputs:"
+    for i in range(len(suppComputationProblems)):
+        print str(i) + " " + suppComputationProblems[i]
+    print str(len(suppComputationProblems)) + \
+          " What problem? I don't have a problem. Get out of my way!"
+    operation = raw_input("Choose your operation(0-2): ")
+    try: int(operation)
+    except: operation = -1
+    while int(operation) < 0 or \
+          int(operation) > len(suppComputationProblems):
+        print "\nHow dare you! This operation is not supported!"
+        print "You must type a number between 0 and 3!\n"
+        operation = raw_input("Choose another operation: ")
+        try: int(operation)
+        except: operation = -1
 
-# first get the concrete problem to solve
-title = "Now: Choose concrete problems to solve!"
-stdscr.addstr(1,0,string.center(title, scrw))
-chosenProblemInstances = \
-    event_loop(completeProblemList,stdscr, 3, 0)
+    if int(operation) == len(suppComputationProblems): sys.exit(0)
 
-stdscr.clear()
+    operation = suppComputationProblems[int(operation)]
 
-# now get the CAS
-CASs = None
-if chosenProblemInstances:
-  casList = cpInstance.getPossibleComputerAlgebraSystems()
-  title = "Now: Choose the CAS you want to use!"
-  stdscr.addstr(1,0,string.center(title, scrw))
-  CASs = event_loop(casList,stdscr, 3, 0)
+    # This is from Al, I did't change it, lets hope, it is correct
+    compProbInstanceModule = __import__("classes.computationproblems.%s"%operation,globals(),locals(),[operation])
+    compProbInstanceClass = getattr(compProbInstanceModule,operation)
+    cpInstance = compProbInstanceClass()
+    piSDTables = map(lambda x: xmlres.loadSDTable(x),cpInstance.getAssociatedTables())
+    chosenProblemInstances = []
+    completeProblemList = []
+    for x in piSDTables:
+        completeProblemList += x.listEntries()
+    flag = True
 
-curses.nocbreak(); stdscr.keypad(0); curses.echo()
-curses.endwin()
+    # Now we use curses for a better handling of user input
+    stdscr = curses.initscr()
+    curses.noecho(); curses.cbreak(); stdscr.keypad(1)
 
-if not CASs: sys.exit(0) # user has aborted
+    scrh,scrw = stdscr.getmaxyx()
 
-print
+    # first get the concrete problem to solve
+    title = "Now: Choose concrete problems to solve!"
+    stdscr.addstr(1,0,string.center(title, scrw))
+    chosenProblemInstances = \
+        event_loop(completeProblemList,stdscr, 3, 0)
 
-# following code is from Al, again no changes
-name = raw_input("Please choose the name for that task: ")
-while name =="":
-    print "The name shall not be the empty string!"
+    stdscr.clear()
+
+    # now get the CAS
+    CASs = None
+    if chosenProblemInstances:
+        casList = cpInstance.getPossibleComputerAlgebraSystems()
+        title = "Now: Choose the CAS you want to use!"
+        stdscr.addstr(1,0,string.center(title, scrw))
+        CASs = event_loop(casList,stdscr, 3, 0)
+
+    curses.nocbreak(); stdscr.keypad(0); curses.echo()
+    curses.endwin()
+
+    if not CASs: sys.exit(0) # user has aborted
+
+    print
+
+    # following code is from Al, again no changes
     name = raw_input("Please choose the name for that task: ")
-#Now, we have all information to create the task
-theTask = Task(name, cpInstance.getName(), map(lambda x: x.getName(),piSDTables),chosenProblemInstances,CASs)
-casDict = {}
-for c in CASs:
-    command = raw_input("Command for executing %s on the target-machine: "%c)
-    casDict[c] = command
-command = raw_input("The time command name on the target machine: ")
-ms = MachineSettings(casDict, command)
-#Now we create the taskfolder.
-tf = TaskFolderCreator().create(theTask,xmlres,ms)
-pathToSaveInp = raw_input("Now choose to which folder the taskfolder shall be exported: ")
-while not os.path.isdir(pathToSaveInp):
-    pathToSaveInp = raw_input("Path not valid. Please choose another one: ")
-tf.write(pathToSaveInp,xmlres)
-print "Creation of task successful. Goodbye."
+    while name =="":
+        print "The name shall not be the empty string!"
+        name = raw_input("Please choose the name for that task: ")
+    #Now, we have all information to create the task
+    theTask = Task(name, cpInstance.getName(), map(lambda x: x.getName(),piSDTables),chosenProblemInstances,CASs)
+    casDict = {}
+    if os.path.isfile("msHistory.xml"):
+      msHistoryFile=open("msHistory.xml","r")
+      msBuilder = MachineSettingsFromXMLBuilder()
+      ms = msBuilder.build(msHistoryFile.read())
+      msHistoryFile.close()
+    else:
+      ms = None
+    for c in CASs:
+      if (ms != None and (c in ms.getCASDict())):
+        command = raw_input("Command for executing %s on the \
+target-machine (default: %s): "%(c,ms.getCASDict()[c])) or  ms.getCASDict()[c]
+      else:
+        command = raw_input("Command for executing %s on the \
+target-machine: "%c)
+      casDict[c] = command
+    if (ms!=None):
+      command = raw_input(
+        "The time command name on the target machine (default: \
+%s):"%ms.getTimeCommand()) or ms.getTimeCommand()
+    else:
+      command = raw_input(
+        "The time command name on the target machine:")
+    if ms == None:    
+      ms = MachineSettings(casDict, command)
+    else:
+      ms.getCASDict().update(casDict)
+      ms.setTimeCommand(command)
+    msHistoryFile = open("msHistory.xml","w")
+    msHistoryFile.write(ms.toXML().toprettyxml(indent="  "))
+    msHistoryFile.close()
+    #Now we create the taskfolder.
+    tf = TaskFolderCreator().create(theTask,xmlres,ms)
+    pathToSaveInp = raw_input("Now choose to which folder the taskfolder shall be exported: ")
+    while not os.path.isdir(pathToSaveInp):
+        pathToSaveInp = raw_input("Path not valid. Please choose another one: ")
+    tf.write(pathToSaveInp,xmlres)
+    print "Creation of task successful. Goodbye."

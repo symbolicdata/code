@@ -14,9 +14,9 @@ def generateCode(vars, basis, uptoDeg):
     The main function generating the Singular code for the computation of
     the Groebner basis given the input variables.
 
-    :param         vars: A list of variables used in the FreeAlgebra-System
+    :param         vars: A list of variables used in the FreeAlgebras-System
     :type          vars: list
-    :param        basis: The polynomials forming a basis of the FreeAlgebra-System. This input will not be checked whether
+    :param        basis: The polynomials forming a basis of the FreeAlgebras-System. This input will not be checked whether
                          there are polynomials using variables not in the list of variables.
     :type         basis: list
     :param      uptoDeg: The uptoDeg Entry.
@@ -30,9 +30,9 @@ def generateCode(vars, basis, uptoDeg):
     result += "ideal I = %s;\n" % ",\n".join(FAPolyToSingularStyle(v,vars) for v in basis)
     result += "option(prot);\noption(redTail);\noption(redSB);\n"
     result += "ideal J = letplaceGBasis(I);\n"
-    result += "print (\">>Output Start\");\n"
+    result += "print(\"=====Solution Begin=====\");\n"
     result += "print (J, \"%s\");\n"
-    result += "print (\"<<Output End\");$"
+    result += "print(\"=====Solution End=====\");$;"
     return result
 
 #--------------------------------------------------

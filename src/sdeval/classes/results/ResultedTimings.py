@@ -1,4 +1,5 @@
 from Proceedings import Proceedings
+from ..Task import Task
 
 class ResultedTimings(object):
     """
@@ -13,6 +14,7 @@ class ResultedTimings(object):
         """
         This is the constructor of the ResultedTimings-Class. Either a proceedings instance is given and
         this will be used then, or a new Proceedings instance is generated given the task and the timeStamp.
+        If both are given, the object is created by ignoring the last two input entries.
 
         :param proceedings: The proceedings instance we want to decorate
         :type  proceedings: Proceedings
@@ -22,12 +24,16 @@ class ResultedTimings(object):
         :type  timeStamp: string
         :raise   IOError: If neither a Proceedings instance nor a task or a timeStamp is given
         """
+        if (proceedings == None and (task == None and timeStamp == None)):
+            raise IOError("In ResultedTimings constructor: Neither proceedings, nor a tuple of task and a timestamp are given.")
         if proceedings:
+            if (not isinstance(proceedings,Proceedings)):
+                raise IOError("The given input was not of type Proceedings")
             self.__proceedings = proceedings
         elif task and timeStamp:
+            if ((not isinstance(task,Task)) or (not isinstance(timeStamp,str))):
+                raise IOError("The given Task was not of correct type, or the timestamp")
             self.__proceedings = Proceedings(task,timeStamp)
-        else:
-            raise IOError("In ResultedTimings constructor: Neither proceedings, nor a tuple of task and a timestamp are given.")
         self.__ResultingFileDict = {}
 
     def getTask(self):
@@ -56,6 +62,29 @@ class ResultedTimings(object):
         :rtype:   Proceedings
         """
         return self.__proceedings
+
+    # def setProceedings(self,pr):
+    #     """
+    #     Updates the decorated instance of Proceedings.
+    #     In case when there is an entry in the ResultingFileDictionary,
+    #     whose key is not in this updated Proceedings instance, a ValueError
+    #     is raised. This ValueError is also raised, if the input is not an
+    #     instance of Proceedings.
+
+    #     :param pr: An instance of Proceedings
+    #     :type  pr: Proceedings
+    #     :
+    #     """
+    #     if (not type(pr)==Proceedings):
+    #         raise ValueError("Input was not of type Proceedings.")
+    #     for i in pr.getCOMPLETED()
+    #         if (not (str(i) in self.__ResultingFileDict)):
+    #             raise ValueError("Updating Proceedings impossible. Incompatible data.")
+    #     for i in pr.getERROR()
+    #         if (not (str(i) in self.__ResultingFileDict)):
+    #             raise ValueError("Updating Proceedings impossible. Incompatible data.")
+    #     self.__proceedings = pr
+            
 
     def getResultingFileDict(self):
         """
@@ -126,3 +155,15 @@ class ResultedTimings(object):
         """
         self.__proceedings.setCOMPLETED(tuple[:2])
         self.__ResultingFileDict[str(tuple[:2])] = timings
+
+    def setERROR(self, tuple, timings):
+        """
+        Adds a tuple to the list of erroneous computations. It is assumed that the tuple is
+        contained in the RUNNING list, otherwise this function does nothing.
+
+        :param tuple: A tuple of the form (problem instance, computer algebra system)
+        :type  tuple: list
+        """
+        if tuple[:2] in self.__proceedings.getRUNNING():
+            self.__proceedings.setERROR(tuple[:2])
+            self.__ResultingFileDict[str(tuple[:2])] = timings

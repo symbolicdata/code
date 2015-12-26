@@ -1,0 +1,77 @@
+/*HTML style file for HTML files created by SDEval to illustrate*/
+/*results of computations.*/
+/*Author: Albert Heinle <aheinle@uwaterloo.ca>*/
+
+body
+{
+    /*Main options for the body of the HTML file*/
+    
+}
+
+h1
+{
+    /*The name of the task is displayed under h1*/
+}
+
+h2
+{
+    /*The current time-stamp is displayed in this environment*/
+}
+
+#mainTable
+{
+    /*This represents the main table where the results are displayed*/
+    border:1px solid black;
+}
+
+#mainTable td
+{
+    /*General settings for the cells inside the main table.*/
+    /*These are refined for special cases in between*/
+    border:1px solid black;
+}
+
+#runningCalc
+{
+    /*Entries in the main table which represent a calculation that is*/
+    /*currently running*/
+    background-color:yellow;
+}
+
+#completedCalc
+{
+    /*Entries in the main table which represent a calculation that is*/
+    /*completed*/
+    background-color:green;
+}
+
+#erroneousCalc
+{
+    /*Entries in the main table which represent a calculation that is*/
+    /*terminated in erroneously*/
+    background-color:red;
+}
+
+#waitingCalc
+{
+    /*Entries in the main table which represent a calculation that is*/
+    /*currently waiting to be executed*/
+}
+
+#casName
+{
+    /*The style for the entries in the first row of the table (names*/
+    /*of the computer algebra systems that are run).*/
+}
+
+#piName
+{
+    /*The style for the entries in the first column of the table (names*/
+    /*of the problem instances).*/
+}
+
+#piAndCAS
+{
+    /*This is the lonely entry in the top-right of the table,*/
+    /*displaying "Problem Instance/Computer Algebra System"*/
+}

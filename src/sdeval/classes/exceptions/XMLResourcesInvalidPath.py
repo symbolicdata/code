@@ -1,6 +1,6 @@
-class XMLRessourcesInvalidPath(Exception):
+class XMLResourcesInvalidPath(Exception):
     """
-    If the given path for the XMLRessources is not valid, this exception is raised.
+    If the given path for the XMLResources is not valid, this exception is raised.
 
     .. moduleauthor::  Albert Heinle <albert.heinle@rwth-aachen.de>
     """

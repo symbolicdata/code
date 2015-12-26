@@ -1,3 +1,5 @@
+from ..Task import Task
+
 class Proceedings(object):
     """
     This is a class representation of the proceedings.
@@ -29,6 +31,10 @@ class Proceedings(object):
         :param timeStamp: The timestamp of the execution of the task
         :type  timeStamp: string
         """
+        if task == None or timeStamp == None:
+            raise Exception("Either the task was None, or the timestamp")
+        if not isinstance(task, Task) or not isinstance(timeStamp,str):
+            raise Exception("The type of the task or the typestamp is not correct")
         self.__WAITING   = []
         self.__RUNNING   = []
         self.__COMPLETED = []
@@ -117,3 +123,15 @@ class Proceedings(object):
         if tuple in self.__RUNNING:
             self.__RUNNING.remove(tuple)
             self.__COMPLETED.append(tuple)
+
+    def setERROR(self, tuple):
+        """
+        Adds a tuple to the list of erroneous computations. It is assumed that the tuple is
+        contained in the RUNNING list, otherwise this function does nothing.
+
+        :param tuple: A tuple of the form (problem instance, computer algebra system)
+        :type  tuple: list
+        """
+        if tuple in self.__RUNNING:
+            self.__RUNNING.remove(tuple)
+            self.__ERROR.append(tuple)

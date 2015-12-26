@@ -26,7 +26,9 @@ F := RationalField();\n\
 P<%s> := PolynomialRing(F,%i);\n\
 I := ideal<P | %s>;\n\
 B := GroebnerBasis(I);\n\
+print \"=====Solution Begin=====\";\n\
 B;\n\
+print \"=====Solution End=====\";\n\
 quit;\
 " % (",".join(vars),
      len(vars),

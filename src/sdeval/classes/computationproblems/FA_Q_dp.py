@@ -68,10 +68,20 @@ class FA_Q_dp(ComputationProblem):
         they will be added fixed to the class variable representing the list of associated tables.
 
         :param associatedTable: The name of the table the user wants to add
-        :type  associatedTable: string
+        :type  associatedTable: string[nonempty][valid file name]
+        :returns: True if associatedTable could be appended or was already there,
+                  False otherwise
         """
         if not associatedTable in self.__associatedTables:
+            if not self._checkIfValidFileName(associatedTable):
+                #Validity check of input file name
+                return False
+            #If we reach this line, everything was okay with the code.
             self.__associatedTables.append(associatedTable)
+            return True
+        else:
+            #In this case, the associated table was already in the list.
+            return True
 
     def addToComputerAlgebraSystems(self,cas):
         """
@@ -82,7 +92,17 @@ class FA_Q_dp(ComputationProblem):
         in a stable way, they will be added fixed to the class variable representing the list of possible computer algebra systems.
 
         :param cas: The name of the computer algebra system
-        :type  cas: string
+        :type  cas: string[non-empty][valid file name]
+        :returns:   True, if computer algebra system had a valid name and could be appended,
+                    False, otherwise
         """
         if not cas in self.__possibleCASs:
+            if not self._checkIfValidFileName(cas):
+                #CAS name was empty or just whitespace characters.
+                #Don't change anything and return false
+                return False
+            #If we reach this line, everything was okay with the code.
             self.__possibleCASs.append(cas)
+            return True
+        else:
+            return True

@@ -36,4 +36,10 @@ class MachineSettingsFromXMLBuilder(object):
                 else:
                     value = str(k.firstChild.data).strip()
             casDict[key] = value
+            if len(casDict)<=0:
+                #In this case our machine settings file was fishy, as
+                #we expect to have at least 1 computer algebra system that is
+                #considered.
+                raise IOError("Inserted Machine Settings file did not contain any software and their\
+respective call commands")
         return MachineSettings(casDict,timeCommand)

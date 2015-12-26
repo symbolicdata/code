@@ -1,0 +1,149 @@
+#+TITLE: Todo-list for SDEval project
+#+AUTHOR: Albert Heinle
+
+* TODO (partly DONE) Analyse the output of computer algebra systems
+Up until now, we are not able to check the output of the computer
+algebra systems. There could be the following milestones defined:
+ - [X] Check if there is an output that has at least the form of a solution to the
+   given problem (i.e. maybe track a segmentation fault and identify
+   a possible error)
+   - Done for FA_Q_dp, GB_Z_lp, GB_Fp_dp for all supported computer
+     algebra systems.
+ - [ ] Check the solution of the computer algebra system for correctness
+   (unrealistic for some tasks, as undecidable in certain cases)
+* TODO Allow executable files as parameters AND piping of their content
+By now, we pipe the content of executable files to the computer
+algebra systems. There should also be an option to just give the path
+to the executable file, and the CAS can read it.
+* TODO Deal with Maples mserver sub-process
+When calling Maple and feeding it with commands, the actual
+computations will be executed by a binary called =mserver=. For
+timing purposes, this is fatal, as we will have to time a
+subprocess. A temporary fix was given after I asked the question about how
+to deal with it in StackOverflow:
+
+* TODO Provide some more documentation about the interconnection of the modules in the code.
+By now, one has to deeply read the documentation of each function,
+but there is no document stating the interconnection between all the
+modules. This needs to be changed in the future.
+* TODO Code Beautification
+For Example:
+ - [ ] Put code in =runTasks.py= in an ~if __name__ = "__main__"~
+   statement
+ - [ ] =FA_Q_dp= template for solution code prettification.
+ - [ ] We need a constants.py of some sort, in order to handle all
+   the changes that might happen.
+
+* TODO GUI
+ - [ ] Make it more portable (i.e. use XML-files to create GUI and
+   leave code to just being the executable part
+ - [ ] Problem instance double click preview should also work for the
+   already added problem instances.
+
+* TODO GAP does not print non-commutative polynomials properly
+For the Computation problem FA_GB_dp, GAP does not print the
+multiplication operator, i.e. =*= between the variables. This needs
+to get fixed.
+* TODO Indicate in the resultsFolder if the calculation has been terminated early
+If =runTasks.py= is terminated early, the proceedings still say
+"running" for at least one calculation. It would be cool if there is
+like a script that gets executed in the case of early termination,
+which makes sure that the info is in the HTML- or XML-files.
+* TODO If certain folders with sources are not available, just error it.
+We have sometimes a Taskfolder, and it might be missing a certain
+computer algebra system for a task, or it is missing even the problem
+instance in total. We need to deal with this for the sake of the
+stability of the runTime.
+* TODO Add an input-XML-file to the results
+A user can right now only see the original problem through the
+CAS-Source files, which is not very good, as he or she needs to
+understand the code. A better solution would be to provide an
+input.XML from the casSources.
+* TODO Run all calculations multiple times
+Sometimes, one wants to run certain computer algebra systems multiple
+times on the same file and e.g. take the average over all
+calculations.
+Two approaches:
+1) We provide another flag to runTasks.py, which says how often you
+   want to run each example for each CAS. Then, this will internally
+   be considered and the output-files will be specifically modified to
+   stretch this fact.
+2) We provide a method to run runTasks.py automatically multiple
+   times, and extract the statistical data from the different
+   result-folders afterwards.   
+* TODO Abort tasks and mark the calculations that have been aborted.
+When Ctrl-C'ing runTasks.py, it should be made visible in the
+HTML-file that the task has been aborted and that nothing is running
+of waiting any more.
+* TODO Sorting the examples in the GUI
+Provide some sorting mechanism for the computation-problems when
+displayed (create_tasks_gui second window; by name, by number of
+variables, etc.)
+* TODO Make killing processes more non-Linux-affine-user friendly
+Right now, we can kill certain processes in between, by using the
+terminal. This is, of course, assuming that a user knows how to use
+certain Linux commands and how to find PID's of their processes. In
+the future, we should be able to communicate to runTasks via a script
+where the user has to only click a button to kill certain processes.
+Notes:
+ - pgrep -P ppid, where ppid is a parent process, could give me the
+   pid's of the respective child processes... We can use that to
+   generate a certain interface.
+* TODO updated current running time to resultedTimings
+As for now, the total running time of a process is displayed at the
+end of the calculations. Some intermediate information on how long the
+task has been approximately already running for would be useful.
+* TODO Make short info about computation problem part of the __init__.py
+Right now, everytime one wants to add a new computation problem, a
+short description will be added inside create_tasks_gui.py. This is
+not optimal, as this should be part of the description of the problem
+itself. Include it somewhere else, like in the __init__.py or so.
+* DONE Make create_tasks_gui have a "memory"
+Make create_tasks remember certain paths to computer algebra systems,
+so that the user does not have to enter them again.
+DONE: Now, there is a file called msHistory, coming standard with
+the SDEval distribution, and it contains some sample commands; these
+are updated once the user decides to enter different ones.
+* DONE Make the HTML files containing the results more pretty.
+We have a CSS file -- now we can work on making things a bit more
+pretty. Particularly, we need to think about some design of the
+HTML-files, so that only changes in the CSS are necessary to do major
+design tweaks.
+* DONE Add possibility to "resume" computation
+Lets say, somebody unplugs your computer unintendedly (or indendedly
+;-))
+Then there should be a possibility to say "resume calculations", so
+that one does not have to deal with two different resulting folders.
+* DONE Add a CSS file for the proceedings resp. resultedTimings HTML files
+Right now, the resultedTimings and the proceedings are pretty
+plain. A user might want to spice the look up a bit. Therefore we
+should provide the possibility to customize some sort of css-file.
+* DONE Provide with the resultFiles information about the machine you were running your tasks on
+Right now, we do not provide information about the machine, where a
+task was run at. Also here, a common format is needed.
+A common way to do that is using the sysctl command.
+
+In order to get information about memory, the command would be
+~sysctl -a | grep "mem"~
+
+In order to get information about the cpu, the command would be
+~sysctl -a | grep "cpu"~
+
+Operating system information
+~sysctl -a | grep "os"~
+* DONE Do not copy everything from casSources
+We give the users the freedom of excluding certain computations from
+the list if they wish for it. But still, the executable files from
+casSources will be copied to the folder results, no matter what. We
+should copy only those sources, for which there have been results calculated.
+
+* DONE Run Tasks in parallel
+Right now, when running runTasks.py, there is at most one computer
+algebra system running at a time, executing exactly one process. In the
+future, we would like to provide the possibility of running several
+computations in parallel.
+
+* DONE Add information to the result folder, which parameters it has been called with.
+=runTasks.py= can be called with different parameters. After the
+process has been run, it is not clear, which parameters it has been
+called with. This information would be handy to have and should be provided.

@@ -1,11 +1,11 @@
 import os
-from exceptions.XMLRessourcesInvalidPath import XMLRessourcesInvalidPath
+from exceptions.XMLResourcesInvalidPath import XMLResourcesInvalidPath
 from exceptions.NoSuchSDTable import NoSuchSDTable
 from SDTable import SDTable
 
-class XMLRessources(object):
+class XMLResources(object):
     """
-    This class is the interface to the Folder XMLRessources in the SymbolicData folder tree.
+    This class is the interface to the Folder XMLResources in the SymbolicData folder tree.
     Its purpose is, that one can access the different SD-Tables inside this folder.
 
     .. moduleauthor:: Albert Heinle <albert.heinle@rwth-aachen.de>
@@ -16,30 +16,30 @@ class XMLRessources(object):
                       "ModPS",
                       "GAlgebras"]
     """
-    At least one of those tables should be contained in XMLRessources for being able to work with this table.
+    At least one of those tables should be contained in XMLResources for being able to work with this table.
     This will be checked when creating this instance
     """
 
-    def __init__(self, folder = os.path.join("..", "..", "data", "XMLResources")):
+    def __init__(self, folder=os.path.join("..","..","data", "XMLResources")):
         """
-        This function is the constructor of the class XMLRessources. It sets the internal
+        This function is the constructor of the class XMLResources. It sets the internal
         variable folder to the given path. If the given folder is not valid, the constructor raises
         an exception.
 
         :requires:                       Existence of the folder that was given as input
-        :param folder:                   The path to the XMLRessources Folder
+        :param folder:                   The path to the XMLResources Folder
         :type  folder:                   A string representing a valid path
-        :raise XMLRessourcesInvalidPath: If given folder is not valid, this exception is raised
+        :raise XMLResourcesInvalidPath: If given folder is not valid, this exception is raised
         """
         
         if not os.path.isdir(folder):
-            raise XMLRessourcesInvalidPath("The given folder " + str(folder) + " is not a valid path!")
-        if not self.__isValidXMLRessourcesFolder(folder):
-            raise XMLRessourcesInvalidPath("The given folder " + str(folder) + "is not a valid XMLRessources folder.\
+            raise XMLResourcesInvalidPath("The given folder " + str(folder) + " is not a valid path!")
+        if not self.__isValidXMLResourcesFolder(folder):
+            raise XMLResourcesInvalidPath("The given folder " + str(folder) + "is not a valid XMLResources folder.\
  Some of the required tables are missing")
         self.__folder = os.path.abspath(folder)
 
-    def __isValidXMLRessourcesFolder(self, folder):
+    def __isValidXMLResourcesFolder(self, folder):
         """
         Checks the validity of the given folder. It is valid, if at least one of the tables of the variable
         __requiredTables is contained in this folder.
@@ -60,12 +60,12 @@ class XMLRessources(object):
         :raise NoSuchSDTable: If the requested SD-Table does not exist, this exception is raised
         """
         if not os.path.isdir(os.path.join(self.__folder,tableName)):
-            raise NoSuchSDTable("The table "+str(tableName)+ " does not exist in the XMLRessources folder!\nXMLResources Path: " + self.__folder)
+            raise NoSuchSDTable("The table "+str(tableName)+ " does not exist in the XMLResources folder!")
         return SDTable(os.path.join(self.__folder, tableName))
 
     def listSDTables(self):
         """
-        Returns a list with all available SD-Tables in the XMLRessources folder.
+        Returns a list with all available SD-Tables in the XMLResources folder.
 
         :rtype:    list
         :returns:  A list with all SD-Tables available
@@ -75,17 +75,17 @@ class XMLRessources(object):
 
     def getPath(self):
         """
-        Returns the Path to the XMLRessources folder.
+        Returns the Path to the XMLResources folder.
 
-        :returns: Path of the XMLRessources folder.
+        :returns: Path of the XMLResources folder.
         :rtype:   string
         """
         return self.__folder
 
     def __str__(self):
         """
-        Returns a String representation of the instance of XMLRessources. It has the following format::
-            Folder: <PathToXMLRessources>
+        Returns a String representation of the instance of XMLResources. It has the following format::
+            Folder: <PathToXMLResources>
             Folder contains the following SDTables:
             <SDTable1>
             <SDTable2>

@@ -1,3 +1,5 @@
+import string
+
 class ComputationProblem(object):
     """
     An abstract representation of a computation problem.
@@ -77,3 +79,23 @@ class ComputationProblem(object):
         :type  cas: string
         """
         NotImplementedError("You must overload the method addToComputerAlgebraSystems if you inherit from ComputationProblem!")
+
+    def _checkIfValidFileName(self,s):
+        """
+        This function checks if a given string only contains characters that are valid in file names.
+        
+        :param s: The string we want to check for validity
+        :type  s: string
+        """
+        if s.strip()=="":
+            #s is empty or just whitespace characters. Not valid
+            return False
+        #valid_chars represents the characters that can appear in a filename
+        valid_chars = "-_.() %s%s" % (string.ascii_letters, string.digits)
+        invalid_substring = filter(lambda x: x not in valid_chars, s)
+        if len(invalid_substring)>0:
+            #There were invalid characters inside the associatedTable.
+            #We do not accept.
+            return False
+        #If we reach this line, everything was fine and we can return True
+        return True

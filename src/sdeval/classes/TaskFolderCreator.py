@@ -2,6 +2,9 @@ import os
 from TaskFolderTree import TaskFolderTree
 from TaskFolder import TaskFolder
 from templates import comp
+from Task import Task
+from XMLResources import XMLResources
+from MachineSettings import MachineSettings
 
 class TaskFolderCreator(object):
     """
@@ -14,17 +17,25 @@ class TaskFolderCreator(object):
     def create(self,task, xmlRessources, machineSettings):
         """
         The function that creates the taskfolder using the information given in task, the xmlRessources, and the machineSettings.
-
+        If the input is not valid, None is returned.
+        
         :param                 task: The task associated to the taskfolder
         :type                  task: Task
-        :param        xmlRessources: The interface to the XMLRessources folder in Symbolic Data
-        :type         xmlRessources: XMLRessources
+        :param        xmlRessources: The interface to the XMLResources folder in Symbolic Data
+        :type         xmlRessources: XMLResources
         :param      machineSettings: The machine settings of the target machine
         :type       machineSettings: MachineSettings
-        :raises NotImplementedError: If there is a template not existing.
+        :raises         ImportError: If there is a template not existing.
         :returns:                    An instance of taskfolder fitting to the given task.
-        :rtype:                      TaskFolder
+        :rtype:                      TaskFolder or None
         """
+        if (task == None or xmlRessources == None or machineSettings == None):
+            return None
+        if ((not isinstance(task, Task)) or
+            (not isinstance(xmlRessources,XMLResources)) or (not
+            isinstance(machineSettings,MachineSettings))):
+            return None
+        #Done input check
         pathOfSDEval = os.path.split(os.path.realpath(os.path.dirname(__file__)))[0]
         #The only thing we need to create is The taskfolderTree
         tft = TaskFolderTree()
@@ -51,4 +62,6 @@ class TaskFolderCreator(object):
                         tft.addCode(sdt.getName(),p,c,codeGenerator(pi.getVars(),pi.getBasis(),pi.getCharacteristic()))
                     elif task.getComputationProblem() == "FA_Q_dp":
                         tft.addCode(sdt.getName(),p,c,codeGenerator(pi.getVars(),pi.getBasis(),pi.getUpToDeg()))
+                    elif task.getComputationProblem() == "SOL_R_poly_sys":
+                        tft.addCode(sdt.getName(),p,c,codeGenerator(pi.getVars(),pi.getBasis()))
         return TaskFolder(task,tft,machineSettings)

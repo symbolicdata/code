@@ -21,11 +21,18 @@ class ResultingFile(object):
         :type    casOutput: string
         :param        time: A dictionary with the timings. It has three keys: real, user and sys. Its values are the corresponding times
         :type         time: dictionary
+
+        If the parameter time is not a valid dictionary, it will be ignored and internally
+        the value {"real":0.0,"user":0.0,"sys":0.0} is set for self.__time for this class.
         """
         self.__pInstance = pInstance
         self.__cas       = cas
         self.__casOutput = casOutput
-        self.__time      = time
+        if (time == None) or (not isinstance(time,dict))\
+           or (not (time.has_key("real") and time.has_key("user") and time.has_key("sys"))):
+            self.__time = {"real":0.0,"user":0.0,"sys":0.0}
+        else:
+            self.__time      = time
 
     def getTimes(self):
         """
@@ -76,7 +83,6 @@ class ResultingFile(object):
             <the output of the computer algebra system>
         """
         result ="\
-SD-Table: %s\n\
 Problem instance: %s\n\
 Computer algebra system: %s\n\
 Times:\n\
@@ -84,8 +90,7 @@ Times:\n\
     user: %s\n\
      sys: %s\n\
 Output:\n\
-%s" % (self.__sdTable,
-       self.__pInstance,
+%s" % (self.__pInstance,
        self.__cas,
        self.__time['real'],
        self.__time['user'],

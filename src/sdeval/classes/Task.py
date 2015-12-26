@@ -22,7 +22,7 @@ class Task(object):
         It initializes the variables and checks whether the given sets are not empty.
 
         :param                   name: The name of the task
-        :type                    name: string
+        :type                    name: string[non-empty, not just whitespaces]
         :param     computationProblem: The name of the computation problem the task is associated to
         :type      computationProblem: string
         :param               sdTables: A list of names of sdTables where the problem instances are taken from.
@@ -37,8 +37,11 @@ class Task(object):
         """
         if len(sdTables)==0 or \
             len(problemInstances)==0 or \
-            len(computerAlgebraSystems)==0:
-            raise IOError("Task instance creation failed. One of the input lists was empty.")
+            len(computerAlgebraSystems)==0 or \
+            name.strip()=="" or \
+            computationProblem.strip()=="":
+            raise IOError("Task instance creation failed. One of the input lists was empty or the name/computationproblem\
+was the empty string or whitespaces.")
         else:
             self.__name = name
             self.__computationProblem = computationProblem
@@ -118,8 +121,7 @@ Associated SD-Tables:\n\
 Problem instances:\n\
 %s\n\
 Chosen computer algebra systems:\n\
-%s\n\
-" % (self.__name,
+%s" % (self.__name,
      self.__computationProblem,
      "\n".join(self.__sdTables),
      "\n".join(self.__problemInstances),

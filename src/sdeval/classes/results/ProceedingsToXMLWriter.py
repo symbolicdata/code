@@ -1,4 +1,5 @@
 import xml.dom.minidom as dom
+from Proceedings import Proceedings
 
 class ProceedingsToXMLWriter(object):
     """
@@ -40,11 +41,17 @@ class ProceedingsToXMLWriter(object):
             </error>
           </proceedings>
 
+        If the Proceedings-instance was not given in the correct datatype, the function will return None
+        
         :param    proceedings: The proceedings we want to have the xml representation of
         :type     proceedings: Proceedings
         :returns:              An xml-representation of the proceedings
         :rtype:                xml.dom.minidom.Document
         """
+        if not isinstance(proceedings, Proceedings):
+            return None
+        if proceedings == None:
+            return None
         result = dom.Document()
         result.appendChild(result.createElement("proceedings"))
         tempNode = result.firstChild

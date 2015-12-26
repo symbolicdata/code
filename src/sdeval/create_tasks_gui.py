@@ -26,13 +26,15 @@ computer algebra systems.
 #For the readability:
 dictComputationProblem={"FA_Q_dp":"Groebner basis over free algebra",
                         "GB_Z_lp":"Groebner basis commutative",
-                        "GB_Fp_dp":"Groebner basis commutative (finite field)"}
+                        "GB_Fp_dp":"Groebner basis commutative (finite field)",
+                        "SOL_R_poly_sys":"Finding real solutions for polynomial systems of equations"}
 
 import os # This is for the check if the path does exist in the next step
 import shutil
 
-from classes.XMLRessources import XMLRessources
+from classes.XMLResources import XMLResources
 from classes.MachineSettings import MachineSettings
+from classes.MachineSettingsFromXMLBuilder import MachineSettingsFromXMLBuilder
 from classes.TaskFolderCreator import TaskFolderCreator
 from classes.Task import Task
 
@@ -44,21 +46,6 @@ import xml.dom.minidom as dom
 
 
 ################################################################################
-#First of all, check, if the directory with the XMLRessources of Symbolicdata
-#does exist in the expected path "../XMLResources/". If not, the
-#user will be asked later for the path.
-
-stdxmlDataPathDir = os.path.join("..", "..", "data", "XMLResources")
-isXMLRessourcesDirectory = \
-    os.path.isdir(stdxmlDataPathDir)
-    # To make it more platform independent. What stands here would be in unix terms
-    #../../../OWLData/XMLResources.
-
-xmlDataPath = None
-if (isXMLRessourcesDirectory):
-  xmlDataPath = os.path.realpath(stdxmlDataPathDir)
-
-################################################################################
 #Lets start with the gui itself.
 
 class CreateTasksGui:
@@ -68,11 +55,18 @@ class CreateTasksGui:
     self.createMainFrame()
     self.createWindowProblemSelect()
     self.currentWindow = "ProblemSelect"# Other possibilities are TableSelect and CASSelect
-    self.checkXMLRessourcesDir()
+    self.checkXMLResourcesDir()
     self.input_operation = None
     self.input_problemClass = None
     self.input_problems = []
     self.input_compAlgSystems = []
+    if os.path.isfile("msHistory.xml"):
+      f=open("msHistory.xml","r")
+      msBuilder = MachineSettingsFromXMLBuilder()
+      self.ms = msBuilder.build(f.read())
+      f.close()
+    else:
+      self.ms = None
     #self.createTableSelect()
     #self.createCASSelect()
     Tkinter.mainloop()
@@ -108,12 +102,12 @@ who funded the project (Schwerpunkt 1489)")
     self.mainFrame=Tkinter.Frame(self.mainWindow)
     self.mainFrame.grid();
 
-  def checkXMLRessourcesDir(self):
+  def checkXMLResourcesDir(self):
     global xmlDataPath
     validDir = False
     while not validDir:
       try:
-        self.__xmlres = XMLRessources(xmlDataPath)
+        self.__xmlres = XMLResources(xmlDataPath)
         validDir = True
       except:
         xmlDataPath = tkFileDialog.askdirectory(mustexist=True)
@@ -228,11 +222,19 @@ who funded the project (Schwerpunkt 1489)")
       casDict = {}
       for c in ourCASs:
         casDict[c] = self.entry_CASs[c].get().strip()
-      ms = MachineSettings(casDict, self.entry_Time.get().strip())
+      if self.ms == None:
+        self.ms = MachineSettings(casDict,
+                                  self.entry_Time.get().strip())
+      else:
+        self.ms.getCASDict().update(casDict)
+        self.ms.setTimeCommand(self.entry_Time.get().strip())
       #Now we create the taskfolder.
-      tf = TaskFolderCreator().create(theTask,self.__xmlres,ms)
+      tf = TaskFolderCreator().create(theTask,self.__xmlres,self.ms)
       tf.write(exportFolder,self.__xmlres)
       tkMessageBox.showinfo(title="Successful", message = "The task was successfully created.")
+      msHistory = open("msHistory.xml","w")
+      msHistory.write(self.ms.toXML().toprettyxml(indent="  "))
+      msHistory.close()
       self.mainWindow.destroy()
 
   def btnAddClick(self):
@@ -300,7 +302,7 @@ who funded the project (Schwerpunkt 1489)")
     sdEvalPath = os.path.realpath(os.path.dirname(__file__))
     suppComputationProblems = filter(lambda x: os.path.isdir(os.path.join(sdEvalPath,"classes","templates","comp",x)),
                                      os.listdir(os.path.join(sdEvalPath,"classes","templates","comp")))
-    self.mainWindow.geometry("%dx%d%+d%+d" % (300, 200, 40, 40))
+    self.mainWindow.geometry("%dx%d%+d%+d" % (500, 200, 40, 40))
     #top left corner there is the text labeled by "problem"
     self.lbl_Problem = Tkinter.Label(self.mainFrame, text="Problem:")
     self.lbl_Problem.grid(row=0,columnspan = 2,sticky=Tkinter.W)
@@ -353,7 +355,7 @@ who funded the project (Schwerpunkt 1489)")
     wants to deal with. Now he selects the Computer Algebra Systems on which the
     calculations should be perfomed. Additionally, he sets his machine settings
     """
-    self.mainWindow.geometry("%dx%d%+d%+d" % (375, 300 + 25*len(self.cpInstance.getPossibleComputerAlgebraSystems()), 40, 40))
+    self.mainWindow.geometry("%dx%d%+d%+d" % (375, 300 + 30*len(self.cpInstance.getPossibleComputerAlgebraSystems()), 40, 40))
     #Top Label
     self.lbl_computerAlgebraSelect = Tkinter.Label(self.mainFrame, text = "Choose the computer algebra systems\n\
 on which your calculations should be performed")
@@ -380,12 +382,18 @@ the local machine to call the following programs:")
         self.lbl_CASs[key] = Tkinter.Label(self.mainFrame, text = key)
         self.lbl_CASs[key].grid(row = len(self.cpInstance.getPossibleComputerAlgebraSystems())+2+i, column = 0, sticky = Tkinter.E)
         self.entry_CASs[key] = Tkinter.Entry(self.mainFrame)
+        if (self.ms != None and key in self.ms.getCASDict()):
+          #in this case, we can insert a default value
+          self.entry_CASs[key].insert("0",self.ms.getCASDict()[key])
         self.entry_CASs[key].config(width = 10)
         self.entry_CASs[key].grid(row = len(self.cpInstance.getPossibleComputerAlgebraSystems())+2+i, column = 1, sticky = Tkinter.W)
     #The Time Command:
     self.lbl_Time = Tkinter.Label(self.mainFrame, text = "Time:")
     self.lbl_Time.grid(row = 2*len(self.cpInstance.getPossibleComputerAlgebraSystems())+2, column = 0, sticky = Tkinter.E)
     self.entry_Time = Tkinter.Entry(self.mainFrame)
+    if (self.ms != None):
+      #in this case, we can insert a default value
+      self.entry_Time.insert(0,self.ms.getTimeCommand())
     self.entry_Time.config(width = 10)
     self.entry_Time.grid(row = 2*len(self.cpInstance.getPossibleComputerAlgebraSystems())+2,column = 1, sticky = Tkinter.W)
     #Filename to be saved
@@ -400,4 +408,20 @@ the local machine to call the following programs:")
     self.btn_CreateExportFolder = Tkinter.Button(self.mainFrame, text = "Create Export Folder", command = self.btnCreateClick)
     self.btn_CreateExportFolder.grid(row = 2*len(self.cpInstance.getPossibleComputerAlgebraSystems())+4, column = 1, sticky = Tkinter.E)
 
-CreateTasksGui()
+if __name__ == "__main__":
+    ################################################################################
+    #First of all, check, if the directory with the XMLResources of Symbolicdata
+    #does exist in the expected path "../XMLResources/". If not, the
+    #user will be asked later for the path.
+    stdxmlDataPathDir = os.path.join("..","..","data","XMLResources")
+    isXMLResourcesDirectory = \
+        os.path.isdir(stdxmlDataPathDir)
+    # To make it more platform independent. What stands here would be in unix terms
+    #../../../OWLData/XMLResources.
+
+    xmlDataPath = None
+    if (isXMLResourcesDirectory):
+        xmlDataPath = os.path.realpath(stdxmlDataPathDir)
+    ####################
+    #Start the GUI
+    CreateTasksGui()
