@@ -1,0 +1,83 @@
+/*
+@author: Albert Heinle; albert.heinle@rwth-aachen.de
+Methods to convert an Ideal in a Singular LetterPlace ring
+into a entry of the table "FREEALGEBRA" in the symbolicdata
+project.
+The main methods:
+	- letterPlacePoly2MagmaString(poly h): Converts a polynomial h into a string
+	                              of the Magma-standard-Freealgebra-input;
+	- letterPlaceIdeal2SD(ideal I, int upToDeg): Converts a given Ideal to a
+								  symbolicdata table entry.
+*/
+
+proc inList(list l, element)
+{
+  int i;
+  for (i = 1; i<=size(l);i++)
+  {
+  	if (l[i]==element)
+  	{
+  	  return(1);
+  	}
+  }
+  return(0);
+}
+
+proc extractVars(r)
+{
+  int i = 1;
+  int j = 1;
+  string candidate;
+  list result = list();
+  for (i = 1; i<=nvars(r);i++)
+  {
+  	candidate = string(var(i))[1,find(string(var(i)),"(")-1];
+  	if (!inList(result, candidate))
+  	{
+  	  result = insert(result,candidate,size(result));
+  	}
+  }
+  return(result);
+}
+
+proc letterPlacePoly2MagmaString(poly h)
+{
+  int pos;
+  string s = string(h);
+  while(find(s,"("))
+  {
+    pos = find(s,"(");
+    while(s[pos]!=")")
+    {
+      s = s[1,pos-1]+s[pos+1,size(s)-pos];
+    }
+    if (size(s)!=pos)
+    {
+    	s = s[1,pos-1]+s[pos+1,size(s)-pos]; // The last (")")
+    }
+    else
+    {
+		s = s[1,pos-1];
+	}
+  }
+  return(s);
+}
+
+proc letterPlaceIdeal2SD(ideal I, int upToDeg)
+{
+  int i;
+  print("Don't forget to fill in the formal Data in the file");
+  string result = "<?xml version=\"1.0\"?>"+newline+"<FREEALGEBRA createdAt=\"\" createdBy=\"Singular\" id=\"FREEALGEBRA/\">"+newline;
+  result = result + "<vars>"+string(extractVars(basering))+"</vars>"+newline;
+  result = result + "<basis>"+newline;
+  for (i = 1;i<=size(I);i++)
+  {
+    result = result + "<poly>"+letterPlacePoly2MagmaString(I[i])+"</poly>"+newline;
+  }
+  result = result + "</basis>"+newline;
+  result = result + "<uptoDeg>"+ string(upToDeg)+"</uptoDeg>"+newline;
+  result = result + "<Comment></Comment>"+newline;
+  result = result + "<Version></Version>"+newline;
+  result = result + "</FREEALGEBRA>";
+  return(result);
+}

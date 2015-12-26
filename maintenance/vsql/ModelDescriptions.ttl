@@ -1,0 +1,86 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix sysont: <http://ns.ontowiki.net/SysOnt/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sioc: <http://rdfs.org/sioc/ns#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<http://symbolicdata.org/Data/Annotations/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdb=http://symbolicdata.org/Data/BIB/", "sdp=http://symbolicdata.org/Data/Person/", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/Bibliography/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "dcterms=http://purl.org/dc/terms/", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdb=http://symbolicdata.org/Data/BIB/", "sdp=http://symbolicdata.org/Data/Person/", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/BirkhoffPolytopes/>
+    sysont:isLarge 1 ;
+    sysont:prefix "cc=http://creativecommons.org/ns#", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/Contributions/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdp=http://symbolicdata.org/Data/Person/", "sdt=http://symbolicdata.org/Data/Tag/" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/FanoPolytopes/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/FreeAlgebras/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/GAlgebras/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/GeoCode/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/GeoProofSchemes/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/GeometryProblems/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/PastConferences/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "dcterms=http://purl.org/dc/terms/", "ical=http://www.w3.org/2002/12/cal/ical#", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdp=http://symbolicdata.org/Data/Person/", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/People/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "dcterms=http://purl.org/dc/terms/", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdp=http://symbolicdata.org/Data/Person/", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/PersonalProfiles/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdp=http://symbolicdata.org/Data/Person/" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/PolynomialSystems/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/Systems/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "dcterms=http://purl.org/dc/terms/", "foaf=http://xmlns.com/foaf/0.1/", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdp=http://symbolicdata.org/Data/Person/", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/TestSets/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/TransitiveGroups/>
+    sysont:isLarge 1 ;
+    sysont:prefix "cc=http://creativecommons.org/ns#", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/UpcomingConferences/>
+    sysont:prefix "cc=http://creativecommons.org/ns#", "dcterms=http://purl.org/dc/terms/", "ical=http://www.w3.org/2002/12/cal/ical#", "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdp=http://symbolicdata.org/Data/Person/", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
+<http://symbolicdata.org/Data/ZBMathPeople/>
+    sysont:prefix "owl=http://www.w3.org/2002/07/owl#", "rdf=http://www.w3.org/1999/02/22-rdf-syntax-ns#", "rdfs=http://www.w3.org/2000/01/rdf-schema#", "sd=http://symbolicdata.org/Data/Model#", "sdp=http://symbolicdata.org/Data/Person/", "xsd=http://www.w3.org/2001/XMLSchema#" ;
+    a sysont:Model .
+
