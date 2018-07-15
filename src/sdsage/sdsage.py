@@ -287,10 +287,10 @@ class SD_Ideal:
     def __constructSageObject(self):
         # set up the polynomial ring (Sage syntax)
         if 'hasParameters' in self.__dict__ and self.hasParameters != '':
-            K = 'K.<%s> = PolynomialRing(ZZ)' % self.hasParameters
+            K = 'K.<%s> = PolynomialRing(QQ)' % self.hasParameters
             R = K + '; R.<%s> = PolynomialRing(K)' % self.hasVariables
         else:
-            R = 'R.<%s> = PolynomialRing(ZZ)' % (self.hasVariables)
+            R = 'R.<%s> = PolynomialRing(QQ)' % (self.hasVariables)
         # translate Sage syntax to pure Python and execute
         exec(preparse(R))
         # construct polynomials in the constructed ring from

@@ -1,0 +1,13 @@
+*~
+*.out
+*.log
+*.aux
+*.toc
+*.blg
+*.bak
+.idea/
+Gruppe-2.iml
+data/unpacked/*
+src/__pycache__/
+/data/intergeo/generated.xml
+src/jsxgraph

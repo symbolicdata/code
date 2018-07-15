@@ -1,0 +1,41 @@
+<html>
+<head>
+   <title>Intergeo test cases in JSXGraph</title>
+   <link rel="stylesheet" type="text/css" href="JSXGraphCore/distrib/jsxgraph.css" />
+   <script type="text/javascript" src="JSXGraphCore/distrib/prototype.js"></script>
+   <script type="text/javascript" src="JSXGraphCore/src/loadjsxgraph.js"></script>
+   <script type="text/javascript" src="JSXGraphCore/src/intergeo.js"></script>
+   <script type="text/javascript" src='loadJSXG.js'></script>
+</head>
+<body>
+  <h2>Intergeo test cases in JSXGraph</h2>
+  <div><select id="selection" onchange='loadJSXG(".");'>
+    <option value='all.xml'>all</option>
+    <option value='center_of_three_points.xml'>center_of_three_points</option>
+    <option value='circle.xml'>circle</option>
+    <!-- BROKEN <option value='conic.xml'>conic</option>-->
+    <option value='endpoints_of_line_segment.xml'>endpoints_of_line_segment</option>
+    <option value='free_point.xml'>free_point</option>
+    <option value='intersections_circles_line.xml'>intersections_circles_line</option>
+    <!-- BROKEN <option value='line.xml'>line</option>-->
+    <option value='line_segment_by_points.xml'>line_segment_by_points</option>
+    <option value='line_through_two_points.xml'>line_through_two_points</option>
+    <option value='linesegment.xml'>linesegment</option>
+    <option value='locus_cardioid.xml'>locus_cardioid</option>
+    <option value='locus_frequency_duplicator.xml'>locus_frequency_duplicator</option>
+    <option value='locus_pacman.xml'>locus_pacman</option>
+    <option value='locus_parabola.xml'>locus_parabola</option>
+    <option value='locus_shadow.xml'>locus_shadow</option>
+    <option value='midpoint_of_line_segment.xml'>midpoint_of_line_segment</option>
+    <option value='midpoint_of_two_points.xml'>midpoint_of_two_points</option>
+    <option value='other_intersections.xml'>other_intersections</option>
+    <option value='parallel_perpendicular_through.xml'>parallel_perpendicular_through</option>
+    <option value='point.xml'>point</option>
+    <option value='Points.i2g'>Points</option>
+    <option value='rotating_circle.xml'>rotating_circle</option>
+  </select></div>
+  <!--<form><input type='button' value='Show XML' onclick='board.showXML()'></form>-->
+  <div id="jxgbox" class="jxgbox" style="width:800px; height:500px;"></div>
+  <div id="debug" style="display:block; margin-top:20px"></div>
+</body>
+</html>

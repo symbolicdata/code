@@ -55,3 +55,13 @@ docs/_build/
 
 # PyBuilder
 target/
+
+# LaTeX
+*~
+*.out
+*.log
+*.aux
+*.toc
+*.blg
+*.bak
+
