@@ -1,0 +1,134 @@
+<html>
+	<head>
+		<meta charset="UTF-8"/>
+		<title>Chou.75_1</title>
+		<style>
+  			.boardPosition {
+    			position: fixed;
+    			width: 98%;
+    			height: 92%;
+				float:left;
+  			}
+		</style>		
+		<link rel="stylesheet" type="text/css" href="JSXGraphCore/src/jsxgraph.css" />
+		<script type="text/javascript" src="JSXGraphCore/distrib/prototype.js"></script>
+		<script type="text/javascript" src="JSXGraphCore/src/loadjsxgraph.js"></script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>
+					<h2>Chou.75_1</h2>
+				</td>
+				<td>
+					<button style="height: 30px; margin-left: 30px; margin-top: -15px" onclick="saveConfiguration(parameters, 'Chou.75_1');">Save configuration</button>
+				</td>
+			</tr>
+		</table>
+		<div id="jxgbox" class="boardPosition" ></div>
+		<script type="text/javascript">
+			var board = JXG.JSXGraph.initBoard('jxgbox', {axis:true,keepAspectRatio:true,boundingbox: [-40,30,30,-30]});
+			board.setZoom(1,1);
+			
+			var r= board.create('slider',[[40,23],[60,23],[-20,0,20]],{name:'r ($c_1)',snapWidth:-1});
+			r.setValue(5.0);
+			var u1= board.create('slider',[[40,20],[60,20],[-20,0,20]],{name:'u1 ()',snapWidth:-1});
+			u1.setValue(3.0);
+			var u2= board.create('slider',[[40,17],[60,17],[-20,0,20]],{name:'u2 ()',snapWidth:-1});
+			u2.setValue(4.0);
+			var parameters = [r, u1, u2];
+
+			var e = [];
+			e[5] = board.create('point', [1.0,0.0,0.0], {name:'$c_0',strokecolor:'red',fillColor:'red'})
+			e[6] = board.create('point', [1.0,0.0,5.0], {name:'$c_1',strokecolor:'red',fillColor:'red'})
+			e[7] = board.create('circle', [e[5],e[6]], {name:'cir$c_0$c_1'})
+			e[8] = board.create('glider', [-4.949962483002227,0.7056000402993361,e[7]], {name:'$c_2',})
+			e[9] = board.create('point', [1.0,-19.799849932008907,-12.177599838802657], {name:'$c_3',strokecolor:'green',fillColor:'green'})
+			e[10] = board.create('line', [e[5],e[9]], {name:'pp$c_0$c_3',strokecolor:'blue',fillColor:'blue'})
+			e[11] = board.create('perpendicular', [e[10],e[9]], {name:'$c_4',strokecolor:'black',fillColor:'black'})
+			e[12] = board.create('line', [e[5],e[6]], {name:'pp$c_0$c_1',strokecolor:'blue',fillColor:'blue'})
+			e[13] = board.create('perpendicular', [e[12],e[6]], {name:'$c_5',strokecolor:'black',fillColor:'black'})
+			e[14] = board.create('intersection', [e[11],e[13],0], {name:'$c_6',strokecolor:'green',fillColor:'green'})
+			e[15] = board.create('line', [e[5],e[8]], {name:'pp$c_0$c_2',strokecolor:'blue',fillColor:'blue'})
+			e[16] = board.create('perpendicular', [e[15],e[8]], {name:'$c_8',strokecolor:'black',fillColor:'black'})
+			e[17] = board.create('intersection', [e[11],e[16],0], {name:'$c_9',strokecolor:'green',fillColor:'green'})
+
+			r.on('drag', function(){
+				e[6].setPosition(JXG.COORDS_BY_USER,[0,r.Value()]); //name:$c_1
+			});
+			r.setName('r ($c_1)')
+			u1.on('drag', function(){
+				e[8].setPosition(JXG.COORDS_BY_USER,[getCircleSliderX(e[7].center.X(),e[7].radius,u1.Value()),getCircleSliderY(e[7].center.Y(),e[7].radius,u1.Value())]) //name:$c_2
+			});
+			u1.setName('u1 ($c_2)')
+			u2.on('drag', function(){
+				e[9].setPosition(JXG.COORDS_BY_USER,[getLineSliderX(e[6].X(),e[8].X(),u2.Value()),getLineSliderY(e[6].Y(),e[8].Y(),u2.Value())]); //name:$c_3
+			});
+			u2.setName('u2 ($c_3)')
+
+			board.fullUpdate();
+			
+			function getLineSliderX(x1,x2,y1,y2,u) {
+				a=y2-y1;
+				b=x1-x2;
+				c=x2*y1-x1*y2;
+				if (a===0){
+					return u;
+				} else if (b===0){
+					return (-c/a);
+				} else {
+					return u;
+				}
+			};
+			
+			function getLineSliderY(x1,x2,y1,y2,u) {
+				a=y2-y1;
+				b=x1-x2;
+				c=x2*y1-x1*y2;
+				if (a===0){
+					return (-c/b);
+				} else if (b===0){
+					return u;
+				} else {
+					return (-(a*u-c)/b);
+				}
+			};	
+			
+			function getCircleSliderX(a,r,u) {
+				return (a+r* Math.cos(u));
+			};
+			
+			function getCircleSliderY(b,r,u) {
+				return (b+r* Math.sin(u));
+			};		
+			
+			function gcd(a, b) {
+				if ( ! b) {
+					return a;
+				}
+				return gcd(b, a % b);
+			};
+
+			function saveConfiguration(parameters, filename) {
+				filename += ".parameter";
+				console.log("saving parameters to: " + filename);
+				var text = "";
+				parameters.forEach(function(entry) {
+					text += (entry.name.split(" ")[0] + "\t" + entry.Value() + "\n");
+				});
+				var element = document.createElement('a');
+				element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+				element.setAttribute('download', filename);
+
+				element.style.display = 'none';
+				document.body.appendChild(element);
+
+				element.click();
+
+				document.body.removeChild(element);
+			};
+		</script>
+	</body>
+</html>
+
+

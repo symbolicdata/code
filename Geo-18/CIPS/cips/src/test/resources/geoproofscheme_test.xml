@@ -1,0 +1,58 @@
+<?xml version="1.0"?> 
+<Construction>
+<Title>geoproofscheme_test</Title>
+<prooftype> constructive </prooftype>
+<parameters>u1,u2,u3,u4</parameters>
+<Points>
+<Point id='$c1' type='free'>Point[0, 25]</Point>
+<Point id='$c2' type='free'>Point[0, 19]</Point>
+<Point id='$c3' type='free'>Point[14.82, 14.18]</Point>
+<Point id='$c4' type='free'>Point[14.82, 8.18]</Point>
+<Point id='$c5' type='free'>Point[8.88, -3.09]</Point>
+<Point id='$c6' type='free'>Point[8.88, -9.09]</Point>
+<Point id='$c7' type='free'>Point[-8.88, -3.09]</Point>
+<Point id='$c8' type='free'>Point[-8.88, -9.09]</Point>
+<Point id='$c9' type='free'>Point[-14.82, 14.18]</Point>		
+<Point id='$c10' type='free'>Point[-14.82, 8.18]</Point>
+<Point id='$c11' type='free'>Point[u2, u3]</Point>	
+<Point id='$c12' type='free'>Point[90, u3]</Point>
+<Point id='$c13' type='free'>Point[u2, -30]</Point>	
+<Point id='$c14' type='free'>Point[90, -30]</Point>
+</Points>
+<Assignments>
+<Point id='$c31'>circle_slider[$c1, $c2, u1]</Point>
+<Point id='$c32'>circle_slider[$c3, $c4, u1]</Point>
+<Point id='$c33'>circle_slider[$c5, $c6, u1]</Point>
+<Point id='$c34'>circle_slider[$c7, $c8, u1]</Point>
+<Point id='$c35'>circle_slider[$c9, $c10, u1]</Point>
+<Line id='$c36'>pp_line[$c31, $c33]</Line>
+<Line id='$c37'>pp_line[$c31, $c34]</Line>
+<Line id='$c38'>pp_line[$c32, $c34]</Line>
+<Line id='$c39'>pp_line[$c32, $c35]</Line>
+<Line id='$c40'>pp_line[$c33, $c35]</Line>
+<Circle id='$c41'>p3_circle[$c31, $c32, $c33]</Circle>
+<Point id='$c42'>midpoint[$c11, $c13]</Point>
+<Point id='$c43'>midpoint[$c12, $c14]</Point>
+<Circle id='$c44'>pc_circle[$c42, $c11]</Circle>
+<Circle id='$c45'>pc_circle[$c43, $c12]</Circle>
+<Point id='$c46'>circle_slider[$c42, $c11, u4]</Point>
+<Point id='$c47'>circle_slider[$c43, $c12, u4]</Point>
+<Line id='$c48'>pp_line[$c46, $c47]</Line>
+<Line id='$c49'>ortho_line[$c11, $c48]</Line>
+<Line id='$c50'>ortho_line[$c12, $c48]</Line>
+<Point id='$c51'>intersection_point[$c48, $c49]</Point>
+<Point id='$c52'>intersection_point[$c48, $c50]</Point>
+<Point id='$c53'>midpoint[$c11, $c51]</Point>
+<Point id='$c54'>midpoint[$c13, $c51]</Point>
+<Point id='$c55'>midpoint[$c12, $c52]</Point>
+<Point id='$c56'>midpoint[$c14, $c52]</Point>
+<Line id='$c57'>pp_line[$c53, $c55]</Line>
+<Line id='$c58'>pp_line[$c54, $c56]</Line>
+<Point id='$c59'>midpoint[$c51, $c53]</Point>
+<Point id='$c60'>midpoint[$c51, $c54]</Point>
+<Point id='$c61'>midpoint[$c55, $c52]</Point>
+<Point id='$c62'>midpoint[$c52, $c56]</Point>
+<Line id='$c63'>pp_line[$c59, $c61]</Line>
+<Line id='$c64'>pp_line[$c60, $c62]</Line>
+</Assignments>
+</Construction>
