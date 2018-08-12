@@ -17,15 +17,13 @@ use XML::DOM; # A convenient perl DOM Parser package
 # The environment variable SD should point to the root directory of the git
 # cloned repo.
 
-die unless defined $ENV{'SD'};
-
 #### start main: create benchmark output for a special system.
 
+my $SD="/home/graebe/git/SD"; # put in your SD root dir.   
 my $parser=new XML::DOM::Parser;
-my $xmldir="$ENV{'SD'}/data/XMLResources/IntPS";
+my $xmldir=$SD."/data/XMLResources/IntPS";
 my $zeroDimensionalExamples=
-    ["Sym1_211", "Katsura_4", "Sym1_311", "Cyclic_5", "Sym1_321", 
-     "Katsura_5"]; 
+    ["Sym1_211", "Katsura_4", "Sym1_311", "Cyclic_5", "Sym1_321", "Katsura_5"]; 
 
 print createOutputforMuPAD($zeroDimensionalExamples);
 
@@ -35,7 +33,7 @@ sub createOutputforMuPAD {
     my $listOfExamples=shift;
     my $theExamples=join(",\n",map(getExample($_), @$listOfExamples));
     my $out=<<EOT;
-// Startup
+// Startup -- read in library stuff
 read("aca-test.mu"):
 
 // make a list of all examples to be processed
