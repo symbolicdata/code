@@ -62,6 +62,8 @@ class TaskFolderCreator(object):
                         tft.addCode(sdt.getName(),p,c,codeGenerator(pi.getVars(),pi.getBasis(),pi.getCharacteristic()))
                     elif task.getComputationProblem() == "FA_Q_dp":
                         tft.addCode(sdt.getName(),p,c,codeGenerator(pi.getVars(),pi.getBasis(),pi.getUpToDeg()))
+                    elif task.getComputationProblem() == "FA_Q_properties":
+                        tft.addCode(sdt.getName(),p,c,codeGenerator(pi.getVars(),pi.getBasis(),pi.getUpToDeg()))
                     elif task.getComputationProblem() == "SOL_R_poly_sys":
                         tft.addCode(sdt.getName(),p,c,codeGenerator(pi.getVars(),pi.getBasis()))
         return TaskFolder(task,tft,machineSettings)

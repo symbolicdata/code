@@ -2,7 +2,7 @@
 This is the template for the computation problem of computing a Groebner basis of an
 ideal in a free algebra over QQ in the computeralgebra system Singular.
 
-.. moduleauthor:: Albert Heinle <albert.heinle@rwth-aachen.de>
+.. moduleauthor:: Albert Heinle <albert.heinle@rwth-aachen.de>, Karim Abou Zeid <karim.abou.zeid@rwth-aachen.de>
 """
 
 #--------------------------------------------------
@@ -23,20 +23,32 @@ def generateCode(vars, basis, uptoDeg):
     :type       uptoDeg: unsigned int
     """
     result = ""
-    result += "LIB \"freegb.lib\";\n"
+    result += "LIB \"fpaprops.lib\";\n"
     result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
     result += "int d = %i;\n" % uptoDeg
     result += "def R = makeLetterplaceRing(d);\n setring(R);\n"
     result += "ideal I = %s;\n" % ",\n".join(FAPolyToSingularStyle(v,vars) for v in basis)
     result += "option(prot);\noption(redTail);\noption(redSB);\n"
     result += "ideal J = letplaceGBasis(I);\n"
+    result += "int gkDim = lpGkDim(J);\n"
+    result += "int kDim = 0;\n"
+    result += "if(gkDim == 0) {kDim = lpKDim(J);}\n"
+    result += "int glDimBound = lpGlDimBound(J);\n"
+    result += "int noetherian = lpNoetherian(J);\n"
+    result += "int semiPrimeness = lpIsSemiPrime(J);\n"
+    result += "int primeness = lpIsPrime(J);\n"
     result += "print(\"=====Solution Begin=====\");\n"
+    result += "print (gkDim, \"%s\");\n"
+    result += "print (kDim, \"%s\");\n"
+    result += "print (glDimBound, \"%s\");\n"
+    result += "print (noetherian, \"%s\");\n"
+    result += "print (semiPrimeness, \"%s\");\n"
+    result += "print (primeness, \"%s\");\n"
     result += "print (J, \"%s\");\n"
     result += "print (varstr(r), \"%s\");\n"
     result += "print (d, \"%s\");\n"
     result += "print (I, \"%s\");\n"
-    result += "print(\"=====Solution End=====\");"
-    result += "$;"
+    result += "print(\"=====Solution End=====\");$;"
     return result
 
 #--------------------------------------------------
