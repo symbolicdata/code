@@ -134,6 +134,8 @@ class TaskFolder(object):
         os.mkdir(destPath)
         #Copy runTasks.py
         shutil.copy(os.path.join(pathOfSDEval,"runTasks.py"),destPath)
+        #Copy compareResults.py
+        shutil.copy(os.path.join(pathOfSDEval,"compareResults.py"),destPath)
         #writing taskInfo.xml
         tw = TaskToXMLWriter()
         taskTree = tw.createXMLFromTask(self.__task, xmlRessources)
