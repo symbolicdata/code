@@ -29,7 +29,6 @@ import sys
 #--------------------First we check, if we are in a TaskFolder --------------------
 tfPath = os.path.realpath(os.path.dirname(__file__))
 if not os.path.isdir(os.path.join(tfPath,"casSources")) or \
-    not os.path.isfile(os.path.join(tfPath,"taskInfo.xml")) or \
     not os.path.isfile(os.path.join(tfPath,"machinesettings.xml")):
     print "You must create a taskfolder and then run this command from there.\n\
 See create_tasks_gui.py!"
@@ -64,6 +63,7 @@ parser.add_option("-c", "--cputime", dest="maxCPUTime",help="Specify the max. ti
 parser.add_option("-m", "--memoryusage", dest="maxMemUsage", help = "Specify the max. memory (in bytes) a CAS is allowed to use for the given calculations")
 parser.add_option("-j", "--jobs", dest="numberOfJobs", help = "Specify the max. number of computations that should be run in parallel")
 parser.add_option("-r", "--resume", dest="resumeTask", help= "Specify, if you want to resume an unfinished task.")
+parser.add_option("-f", "--task-info", dest="taskInfoFileName", help= "Specify, if you want to use another taskInfo.xml file.")
 
 (opts, args) = parser.parse_args()
 
@@ -83,6 +83,14 @@ if (opts.resumeTask !=None):
     resumeTask = opts.resumeTask
 else:
     resumeTask = None
+if (opts.taskInfoFileName != None):
+    taskInfoFileName = opts.taskInfoFileName
+else:
+    taskInfoFileName = "taskInfo.xml"
+
+if not os.path.isfile(os.path.join(tfPath,taskInfoFileName)):
+    print "taskInfo XML file not found!"
+    sys.exit(-1)
 
 runTaskOpts = RunTaskOptions(maxCPU,maxMem,maxJobs,resumeTask !=None)
 #-------------------- Done Checking user arguments --------------------
@@ -149,7 +157,7 @@ ms  = msc.build(f.read())
 f.close()
 
 #getting the task
-f = open(os.path.join(tfPath,"taskInfo.xml"))
+f = open(os.path.join(tfPath,taskInfoFileName))
 tc = TaskFromXMLBuilder()
 t  = tc.build(f.read())
 f.close()
