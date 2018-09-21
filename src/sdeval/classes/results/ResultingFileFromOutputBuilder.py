@@ -24,14 +24,16 @@ class ResultingFileFromOutputBuilder(object):
         :returns: An Instance of ResultingFile, containing the output of the CAS and the timings
         :rtype: ResultingFile
         """
-        m = re.search(r"(real){1}\s+[0-9]*\.?[0-9]*\s*(user){1}\s+[0-9]*\.?[0-9]*\s*(sys){1}\s+[0-9]*\.?[0-9]*",outp)
+        m = re.search(r"(real){1}\s+[0-9]*\.?[0-9]*\s*(user){1}\s+[0-9]*\.?[0-9]*\s*(sys){1}\s+[0-9]*\.?[0-9]*\s*(max_rss_kbytes){1}\s+[0-9]*\.?[0-9]*",outp)
         if not m:
-            raise IOError("The output file did not contain timings. It shall come with user, sys and real with additional time measures at the end.")
+            raise IOError("The output file did not contain timings. It shall come with user, sys and real with additional time measures at the end. Make sure GNU time is used.")
         timeString = m.group(0)
         realTime = re.search(r"(real){1}\s+[0-9]*\.?[0-9]*",timeString).group(0)
         userTime = re.search(r"(user){1}\s+[0-9]*\.?[0-9]*",timeString).group(0)
         sysTime  = re.search(r"(sys){1}\s+[0-9]*\.?[0-9]*",timeString).group(0)
+        max_mem  = re.search(r"(max_rss_kbytes){1}\s+[0-9]*\.?[0-9]*",timeString).group(0)
         timeDict = {"real":realTime.strip("real").strip(),
                     "user":userTime.strip("user").strip(),
-                    "sys":sysTime.strip("sys").strip()}
-        return ResultingFile(pInstance, cas, outp.replace(timeString,"").strip(),timeDict)
+                    "sys":sysTime.strip("sys").strip(),
+                    "max_mem":('%.2f' % (float(max_mem.strip("max_rss_kbytes").strip()) / 1024)) + " MB"}
+        return ResultingFile(pInstance, cas, outp.replace(timeString,"").strip(), timeDict)

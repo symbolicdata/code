@@ -41,6 +41,7 @@ import time
 import shutil
 import resource
 import commands
+import subprocess
 from classes.MachineSettingsFromXMLBuilder import MachineSettingsFromXMLBuilder
 from classes.TaskFromXMLBuilder import TaskFromXMLBuilder
 from classes.results.Proceedings import Proceedings
@@ -231,8 +232,11 @@ while proceedings.getWAITING() != [] or proceedings.getRUNNING() != []:
                 resource.setrlimit(resource.RLIMIT_CPU,(runTaskOpts.getMaxCPU(),runTaskOpts.getMaxCPU()))
             if (runTaskOpts.getMaxMem() != None):
                 resource.setrlimit(resource.RLIMIT_DATA,(runTaskOpts.getMaxMem(),runTaskOpts.getMaxMem()))
-            filename = os.path.join(tfPath,"casSources",curCalc[0],curCalc[1],"executablefile.sdc")
-            result = commands.getoutput(ms.getTimeCommand()+ " -p "+ms.getCASCommand(curCalc[1])+"< "+filename)
+
+            inputfile = open(os.path.join(tfPath,"casSources",curCalc[0],curCalc[1],"executablefile.sdc"))
+            result = subprocess.Popen([ms.getTimeCommand(), "--format=real %e\nuser %U\nsys %S\nmax_rss_kbytes %M", ms.getCASCommand(curCalc[1])], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=inputfile).communicate()[0]
+            inputfile.close()
+
             file = open(os.path.join(resultsFolder,"resultFiles",curCalc[0],curCalc[1],"outputFile.res"),"w")
             file.write(result)
             file.close()

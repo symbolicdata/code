@@ -29,8 +29,8 @@ class ResultingFile(object):
         self.__cas       = cas
         self.__casOutput = casOutput
         if (time == None) or (not isinstance(time,dict))\
-           or (not (time.has_key("real") and time.has_key("user") and time.has_key("sys"))):
-            self.__time = {"real":0.0,"user":0.0,"sys":0.0}
+           or (not (time.has_key("real") and time.has_key("user") and time.has_key("sys") and time.has_key("max_mem"))):
+               self.__time = {"real":0.0,"user":0.0,"sys":0.0, "max_mem": 0.0}
         else:
             self.__time      = time
 
@@ -89,11 +89,13 @@ Times:\n\
     real: %s\n\
     user: %s\n\
      sys: %s\n\
+ max_mem: %s\n\
 Output:\n\
 %s" % (self.__pInstance,
        self.__cas,
        self.__time['real'],
        self.__time['user'],
        self.__time['sys'],
+       self.__time['max_mem'],
        self.__casOutput)
         return result
