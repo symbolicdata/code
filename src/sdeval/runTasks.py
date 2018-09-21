@@ -48,6 +48,7 @@ from classes.results.ResultedTimings import ResultedTimings
 from classes.results.ProceedingsToHTMLWriter import ProceedingsToHTMLWriter
 from classes.results.ProceedingsToXMLWriter import ProceedingsToXMLWriter
 from classes.results.ProceedingsFromXMLBuilder import ProceedingsFromXMLBuilder
+from classes.results.ResultsToHTMLWriter import ResultsToHTMLWriter
 from classes.results.ResultedTimingsToHTMLWriter import ResultedTimingsToHTMLWriter
 from classes.results.ResultedTimingsToXMLWriter import ResultedTimingsToXMLWriter
 from classes.results.ResultedTimingsFromXMLBuilder import ResultedTimingsFromXMLBuilder
@@ -207,18 +208,22 @@ proceedingsHTMLWriter = ProceedingsToHTMLWriter()
 proceedingsXMLWriter  = ProceedingsToXMLWriter()
 rttoHTMLWriter        = ResultedTimingsToHTMLWriter()
 rttoXMLWriter         = ResultedTimingsToXMLWriter()
+resultsToHTMLWriter   = ResultsToHTMLWriter()
 
 def update():
     proceedingsXMLFile = open(os.path.join(resultsFolder,"proceedings.xml"),"w")
     proceedingsHTMLFile = open(os.path.join(resultsFolder,"proceedings.html"),"w")
     rtXMLFile = open(os.path.join(resultsFolder,"resultedTimings.xml"),"w")
     rtHTMLFile = open(os.path.join(resultsFolder,"resultedTimings.html"),"w")
+    resultsHTMLFile = open(os.path.join(resultsFolder,"results.html"),"w")
     proceedingsXMLFile.write(proceedingsXMLWriter.createXMLFromProceedings(proceedings).toprettyxml())
     proceedingsHTMLFile.write(proceedingsHTMLWriter.createHTMLFromProceedings(proceedings))
     rtXMLFile.write(rttoXMLWriter.createXMLFromResultedTimings(rt).toprettyxml())
     rtHTMLFile.write(rttoHTMLWriter.createHTMLFromResultedTimings(rt))
+    resultsHTMLFile.write(resultsToHTMLWriter.createHTMLFromResultFiles(resultsFolder, t.getComputerAlgebraSystems()))
     proceedingsXMLFile.close()
     proceedingsHTMLFile.close()
+    resultsHTMLFile.close()
     rtXMLFile.close()
     rtHTMLFile.close()
 
