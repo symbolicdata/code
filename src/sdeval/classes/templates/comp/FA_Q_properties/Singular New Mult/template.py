@@ -1,0 +1,86 @@
+"""
+This is the template for the computation problem of computing a Groebner basis of an
+ideal in a free algebra over QQ in the computeralgebra system Singular.
+
+.. moduleauthor:: Albert Heinle <albert.heinle@rwth-aachen.de>, Karim Abou Zeid <karim.abou.zeid@rwth-aachen.de>
+"""
+
+#--------------------------------------------------
+#---------------The template-----------------------
+#--------------------------------------------------
+
+def generateCode(vars, basis, uptoDeg):
+    """
+    The main function generating the Singular code for the computation of
+    the Groebner basis given the input variables.
+
+    :param         vars: A list of variables used in the FreeAlgebras-System
+    :type          vars: list
+    :param        basis: The polynomials forming a basis of the FreeAlgebras-System. This input will not be checked whether
+                         there are polynomials using variables not in the list of variables.
+    :type         basis: list
+    :param      uptoDeg: The uptoDeg Entry.
+    :type       uptoDeg: unsigned int
+    """
+    result = ""
+    result += "LIB \"fpaprops.lib\";\n"
+    result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
+    result += "int d = %i;\n" % uptoDeg
+    result += "def R = makeLetterplaceRing(d);\n setring(R);\n"
+    result += "ideal I = %s;\n" % ",\n".join(FAPolyToSingularStyle(v,vars) for v in basis)
+    result += "option(prot);\noption(redTail);\noption(redSB);\n"
+    result += "ideal J = letplaceGBasis(I);\n"
+    result += "int gkDim = lpGkDim(J);\n"
+    result += "int kDim = 0;\n"
+    result += "if(gkDim == 0) {kDim = lpKDim(J);}\n"
+    result += "int glDimBound = lpGlDimBound(J);\n"
+    result += "int noetherian = lpNoetherian(J);\n"
+    result += "int semiPrimeness = lpIsSemiPrime(J);\n"
+    result += "int primeness = lpIsPrime(J);\n"
+    result += "print(\"=====Solution Begin=====\");\n"
+    result += "print (gkDim, \"%s\");\n"
+    result += "print (kDim, \"%s\");\n"
+    result += "print (glDimBound, \"%s\");\n"
+    result += "print (noetherian, \"%s\");\n"
+    result += "print (semiPrimeness, \"%s\");\n"
+    result += "print (primeness, \"%s\");\n"
+    result += "print (J, \"%s\");\n"
+    result += "print (varstr(r), \"%s\");\n"
+    result += "print (d, \"%s\");\n"
+    result += "print (I, \"%s\");\n"
+    result += "print(\"=====Solution End=====\");$;"
+    return result
+
+#--------------------------------------------------
+#----------------Help Functions--------------------
+#--------------------------------------------------
+
+def FAPolyToSingularStyle(poly,variables):
+        """
+        Input: A Polynomial (Freealgebra) in the MAGMA-Style, and the variables
+               in the corresponding free algebra
+        Output: A Polynomial in the Letterplace Style (with their positions as
+                arguments)
+        :param      poly: The polynomial given in MAGMA-Style
+        :type       poly: string
+        :param variables: A list containing the occurring variables.
+        :type  variables: list
+        """
+        result = ""
+        plusSplit = poly.split("+")
+        for p in plusSplit:
+            minusSplit = p.split("-")
+            for ms in minusSplit:
+                monomials = ms.split("*")
+                for m in monomials:
+                    if m.strip() not in variables: #Coefficient
+                        result += m+"*"
+                        continue
+                    m = m.strip()+"(1)"
+                    result += m.strip()+"*"
+                result = result[:-1] #one * too much
+                result += "-"
+            result = result[:-1]
+            result += "+"
+        result = result[:-1]
+        return result
