@@ -112,10 +112,10 @@ def xmldiffs(file1, file2, diffargs=["-u"]):
     args += [ tmp1.name, tmp2.name ]
 
     try:
-        subprocess.call(args)
+        return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
     except OSError:
         args[0] = "diff"
-        subprocess.call(args)
+        return subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
 
 def print_usage(prog):
     print(__doc__.format(prog=prog).strip())
