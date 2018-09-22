@@ -29,7 +29,6 @@ import sys
 #--------------------First we check, if we are in a TaskFolder --------------------
 tfPath = os.path.realpath(os.path.dirname(__file__))
 if not os.path.isdir(os.path.join(tfPath,"casSources")) or \
-    not os.path.isfile(os.path.join(tfPath,"taskInfo.xml")) or \
     not os.path.isfile(os.path.join(tfPath,"machinesettings.xml")):
     print "You must create a taskfolder and then run this command from there.\n\
 See create_tasks_gui.py!"
@@ -41,6 +40,7 @@ import time
 import shutil
 import resource
 import commands
+import subprocess
 from classes.MachineSettingsFromXMLBuilder import MachineSettingsFromXMLBuilder
 from classes.TaskFromXMLBuilder import TaskFromXMLBuilder
 from classes.results.Proceedings import Proceedings
@@ -48,6 +48,7 @@ from classes.results.ResultedTimings import ResultedTimings
 from classes.results.ProceedingsToHTMLWriter import ProceedingsToHTMLWriter
 from classes.results.ProceedingsToXMLWriter import ProceedingsToXMLWriter
 from classes.results.ProceedingsFromXMLBuilder import ProceedingsFromXMLBuilder
+from classes.results.ResultsToHTMLWriter import ResultsToHTMLWriter
 from classes.results.ResultedTimingsToHTMLWriter import ResultedTimingsToHTMLWriter
 from classes.results.ResultedTimingsToXMLWriter import ResultedTimingsToXMLWriter
 from classes.results.ResultedTimingsFromXMLBuilder import ResultedTimingsFromXMLBuilder
@@ -63,6 +64,7 @@ parser.add_option("-c", "--cputime", dest="maxCPUTime",help="Specify the max. ti
 parser.add_option("-m", "--memoryusage", dest="maxMemUsage", help = "Specify the max. memory (in bytes) a CAS is allowed to use for the given calculations")
 parser.add_option("-j", "--jobs", dest="numberOfJobs", help = "Specify the max. number of computations that should be run in parallel")
 parser.add_option("-r", "--resume", dest="resumeTask", help= "Specify, if you want to resume an unfinished task.")
+parser.add_option("-f", "--task-info", dest="taskInfoFileName", help= "Specify, if you want to use another taskInfo.xml file.")
 
 (opts, args) = parser.parse_args()
 
@@ -82,6 +84,14 @@ if (opts.resumeTask !=None):
     resumeTask = opts.resumeTask
 else:
     resumeTask = None
+if (opts.taskInfoFileName != None):
+    taskInfoFileName = opts.taskInfoFileName
+else:
+    taskInfoFileName = "taskInfo.xml"
+
+if not os.path.isfile(os.path.join(tfPath,taskInfoFileName)):
+    print "taskInfo XML file not found!"
+    sys.exit(-1)
 
 runTaskOpts = RunTaskOptions(maxCPU,maxMem,maxJobs,resumeTask !=None)
 #-------------------- Done Checking user arguments --------------------
@@ -148,7 +158,7 @@ ms  = msc.build(f.read())
 f.close()
 
 #getting the task
-f = open(os.path.join(tfPath,"taskInfo.xml"))
+f = open(os.path.join(tfPath,taskInfoFileName))
 tc = TaskFromXMLBuilder()
 t  = tc.build(f.read())
 f.close()
@@ -198,18 +208,22 @@ proceedingsHTMLWriter = ProceedingsToHTMLWriter()
 proceedingsXMLWriter  = ProceedingsToXMLWriter()
 rttoHTMLWriter        = ResultedTimingsToHTMLWriter()
 rttoXMLWriter         = ResultedTimingsToXMLWriter()
+resultsToHTMLWriter   = ResultsToHTMLWriter()
 
 def update():
     proceedingsXMLFile = open(os.path.join(resultsFolder,"proceedings.xml"),"w")
     proceedingsHTMLFile = open(os.path.join(resultsFolder,"proceedings.html"),"w")
     rtXMLFile = open(os.path.join(resultsFolder,"resultedTimings.xml"),"w")
     rtHTMLFile = open(os.path.join(resultsFolder,"resultedTimings.html"),"w")
+    resultsHTMLFile = open(os.path.join(resultsFolder,"results.html"),"w")
     proceedingsXMLFile.write(proceedingsXMLWriter.createXMLFromProceedings(proceedings).toprettyxml())
     proceedingsHTMLFile.write(proceedingsHTMLWriter.createHTMLFromProceedings(proceedings))
     rtXMLFile.write(rttoXMLWriter.createXMLFromResultedTimings(rt).toprettyxml())
     rtHTMLFile.write(rttoHTMLWriter.createHTMLFromResultedTimings(rt))
+    resultsHTMLFile.write(resultsToHTMLWriter.createHTMLFromResultFiles(resultsFolder, t.getComputerAlgebraSystems()))
     proceedingsXMLFile.close()
     proceedingsHTMLFile.close()
+    resultsHTMLFile.close()
     rtXMLFile.close()
     rtHTMLFile.close()
 
@@ -231,8 +245,11 @@ while proceedings.getWAITING() != [] or proceedings.getRUNNING() != []:
                 resource.setrlimit(resource.RLIMIT_CPU,(runTaskOpts.getMaxCPU(),runTaskOpts.getMaxCPU()))
             if (runTaskOpts.getMaxMem() != None):
                 resource.setrlimit(resource.RLIMIT_DATA,(runTaskOpts.getMaxMem(),runTaskOpts.getMaxMem()))
-            filename = os.path.join(tfPath,"casSources",curCalc[0],curCalc[1],"executablefile.sdc")
-            result = commands.getoutput(ms.getTimeCommand()+ " -p "+ms.getCASCommand(curCalc[1])+"< "+filename)
+
+            inputfile = open(os.path.join(tfPath,"casSources",curCalc[0],curCalc[1],"executablefile.sdc"))
+            result = subprocess.Popen([ms.getTimeCommand(), "--format=real %e\nuser %U\nsys %S\nmax_rss_kbytes %M", ms.getCASCommand(curCalc[1])], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, stdin=inputfile).communicate()[0]
+            inputfile.close()
+
             file = open(os.path.join(resultsFolder,"resultFiles",curCalc[0],curCalc[1],"outputFile.res"),"w")
             file.write(result)
             file.close()

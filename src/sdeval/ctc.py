@@ -147,21 +147,19 @@ if __name__=="__main__":
     #PARSING and initializing the interface to the XMLResources folder
 
     parser = OptionParser("create_tasks.py [options] Arguments")
-    parser.add_option("-s", "--source", dest="xmldatapath", help="The complete path to XML-Data")
+    parser.add_option("-s", "--source", dest="xmlDataPath", help="The complete path to XML-Data")
         #We need the loacation
         #of our XML-Data
-    (opts, args) = parser.parse_args()
+    opts = parser.parse_args()[0]
 
-    stdxmlDataPathDir = os.path.join("..","..","data","XMLResources")
-
-    if (len(args) == 0): # We need at least one argument
-        if not os.path.isdir(stdxmlDataPathDir):
-            print "This program needs at least one argument"
-            sys.exit(-2)
-        else:
-            xmlDataPath = os.path.realpath(stdxmlDataPathDir)
+    if opts.xmlDataPath != None: # We need at least one argument
+        xmlDataPath = os.path.realpath(opts.xmlDataPath)
     else:
-        xmlDataPath = os.path.realpath(args[0])
+        fallback = os.path.join("..","..","..","data","XMLResources")
+        if not os.path.isdir(fallback):
+            print "XML data not found, specify with --source"
+            sys.exit(-2)
+        xmlDataPath = os.path.realpath(fallback)
 
     xmlres = XMLResources(xmlDataPath)
 

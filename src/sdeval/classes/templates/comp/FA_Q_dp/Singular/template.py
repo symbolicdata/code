@@ -32,7 +32,11 @@ def generateCode(vars, basis, uptoDeg):
     result += "ideal J = letplaceGBasis(I);\n"
     result += "print(\"=====Solution Begin=====\");\n"
     result += "print (J, \"%s\");\n"
-    result += "print(\"=====Solution End=====\");$;"
+    result += "print (varstr(r), \"%s\");\n"
+    result += "print (d, \"%s\");\n"
+    result += "print (I, \"%s\");\n"
+    result += "print(\"=====Solution End=====\");"
+    result += "$;"
     return result
 
 #--------------------------------------------------

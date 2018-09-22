@@ -24,7 +24,25 @@ def extractSolution(outpString):
     The XML-string will be given as follows::
 
       <FA_Q_dp_SOL>
-        <basis>
+        <GK_dim>
+          GK dimension
+        </GK_dim>
+        <K_dim>
+          K dimension
+        </K_dim>
+        <global_dim_bound>
+          global dim bound
+        </global_dim_bound>
+        <LM_noetherian>
+          noetherian
+        </LM_noetherian>
+        <LM_prime>
+            primeness
+        </LM_prime>
+        <LM_semi_prime>
+            semiPrimeness
+        </LM_semi_prime>
+        <groebner_basis>
           <polynomial>
             generator_1
           </polynomial>
@@ -32,7 +50,7 @@ def extractSolution(outpString):
             generator_2
           </polynomial>
           ...
-        </basis>
+        </groebner_basis>
         <originalGenerators>
           <polynomial>
             generator_1
@@ -54,7 +72,6 @@ def extractSolution(outpString):
         <upToDeg>
           deg
         </upToDeg>
-        
       </FA_Q_dp_SOL>
 
     Note that everything except from the basis-tag is optional,
@@ -77,31 +94,99 @@ def extractSolution(outpString):
     solBeginPos = outpString.index(solBeginStr) + len(solBeginStr)
     solEndStrPos   = outpString.index(solEndStr)
     solStr = outpString[solBeginPos:solEndStrPos]
-    solStr = solStr.strip();
+    solStr = solStr.strip()
     if (solStr == ""):
         raise ValueError("There is no solution to be found in the output-file")
-    solStrSplit = solStr.split("\n")
-    faGBSol = solStrSplit[0].split(',')
+    solStrSplit = solStr.split("\n");
+
+    gkDim = solStrSplit[0].strip()
+    if (gkDim == "-1"):
+        gkDim = "+infinity"
+    elif (gkDim == "-2"):
+        gkDim = "-infinity"
+    if "? leaving fpaprops.lib::lpGkDim" in outpString:
+        gkDim += " (error)"
+
+    kDim = solStrSplit[1].strip()
+
+    glDimBound = solStrSplit[2].strip()
+    if (glDimBound == "-1"):
+        glDimBound = "+infinity"
+    elif (glDimBound == "-2"):
+        glDimBound = "-infinity"
+    if "? leaving fpaprops.lib::lpGlDimBound" in outpString:
+        glDimBound += " (error)"
+
+    noetherian = solStrSplit[3].strip()
+    if (noetherian == "0"):
+        noetherian = "not Noetherian"
+    elif (noetherian == "1"):
+        noetherian = "left Noetherian"
+    elif (noetherian == "2"):
+        noetherian = "right Noetherian"
+    elif (noetherian == "3"):
+        noetherian = "Noetherian"
+    elif (noetherian == "4"):
+        noetherian = "weak Noetherian"
+    if "? leaving fpaprops.lib::lpNoetherian" in outpString:
+        noetherian += " (error)"
+
+    semiPrimeness = solStrSplit[4].strip()
+    if (semiPrimeness == "1"):
+        semiPrimeness = "yes"
+    elif (semiPrimeness == "0"):
+        semiPrimeness = "no"
+    if "? leaving fpaprops.lib::lpIsSemiPrime" in outpString:
+        semiPrimeness += " (error)"
+
+    primeness = solStrSplit[5].strip()
+    if (primeness == "1"):
+        primeness = "yes"
+    elif (primeness == "0"):
+        primeness = "no"
+    if "? leaving fpaprops.lib::lpIsPrime" in outpString:
+        primeness += " (error)"
+
+    faGBSol = solStrSplit[6].split(',')
     faGBSol = map(lambda x: convertFromLetterplace(x.strip()),faGBSol)
-    originalGenerators = solStrSplit[3].split(',')
+    originalGenerators = solStrSplit[9].split(',')
     originalGenerators = map(lambda x: convertFromLetterplace(x.strip()),originalGenerators)
-    variables = solStrSplit[1].split(',')
-    upToDeg = solStrSplit[2]
+    variables = solStrSplit[7].split(',')
+    upToDeg = solStrSplit[8]
     #From here on, we can assume that we are dealing with a valid
     #string.
     #Construction of the XML-Document
     result = dom.Document()
-    result.appendChild(result.createElement("FA_Q_dp_SOL"))
+    result.appendChild(result.createElement("FA_Q_properties_SOL"))
     tempNode = result.firstChild
+    # Adding gkDim
+    gkDimNode = tempNode.appendChild(result.createElement("GK_dim"))
+    gkDimNode.appendChild(result.createTextNode(gkDim))
+    # Adding kDim
+    if gkDim == '0':
+        gkDimNode = tempNode.appendChild(result.createElement("K_dim"))
+        gkDimNode.appendChild(result.createTextNode(kDim))
+    # Adding glDimBound
+    gkDimNode = tempNode.appendChild(result.createElement("global_dim_bound"))
+    gkDimNode.appendChild(result.createTextNode(glDimBound))
+    # Adding noetherian
+    gkDimNode = tempNode.appendChild(result.createElement("LM_noetherian"))
+    gkDimNode.appendChild(result.createTextNode(noetherian))
+    # Adding semiPrimeness
+    gkDimNode = tempNode.appendChild(result.createElement("LM_semi_prime"))
+    gkDimNode.appendChild(result.createTextNode(semiPrimeness))
+    # Adding primeness
+    gkDimNode = tempNode.appendChild(result.createElement("LM_prime"))
+    gkDimNode.appendChild(result.createTextNode(primeness))
     #Adding the basis
-    tempNodeFABasis = tempNode.appendChild(result.createElement("basis"))
+    tempNodeFABasis = tempNode.appendChild(result.createElement("groebner_basis"))
     for b in faGBSol:
         tempPolyNode =\
             tempNodeFABasis.appendChild(result.createElement("polynomial"))
         tempPolyNode.appendChild(result.createTextNode(b))
     #Adding the original generators list, if existent
     if (len(originalGenerators)>0):
-        tempNodeOrigGen = tempNode.appendChild(result.createElement("originalGenerators"))
+        tempNodeOrigGen = tempNode.appendChild(result.createElement("original_generators"))
         for b in originalGenerators:
             tempPolyNode =\
                 tempNodeOrigGen.appendChild(result.createElement("polynomial"))
@@ -117,7 +202,7 @@ def extractSolution(outpString):
     #Adding upToDeg, if positive
     if (upToDeg != '0'):
         tempNodeUpToDeg =\
-            tempNode.appendChild(result.createElement("upToDeg"))
+            tempNode.appendChild(result.createElement("up_to_deg"))
         tempNodeUpToDeg.appendChild(result.createTextNode(str(upToDeg)))
     # Errors
     if (errorCount):
@@ -159,4 +244,4 @@ def convertFromLetterplace(inpPoly):
         result += "+"
     result = result[:-1]
     return result
-        
+
