@@ -27,7 +27,7 @@ def generateCode(vars, basis, uptoDeg):
     result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
     result += "int d = %i;\n" % uptoDeg
     result += "def R = makeLetterplaceRing(d);\n setring(R);\n"
-    result += "ideal I = %s;\n" % ",\n".join(FAPolyToSingularStyle(v,vars) for v in basis)
+    result += "ideal I = %s;\n" % ",\n".join(v for v in basis)
     result += "option(prot);\noption(redTail);\noption(redSB);\n"
     result += "ideal J = letplaceGBasis(I);\n"
     result += "int gkDim = lpGkDim(J);\n"
@@ -51,36 +51,3 @@ def generateCode(vars, basis, uptoDeg):
     result += "print(\"=====Solution End=====\");$;"
     return result
 
-#--------------------------------------------------
-#----------------Help Functions--------------------
-#--------------------------------------------------
-
-def FAPolyToSingularStyle(poly,variables):
-        """
-        Input: A Polynomial (Freealgebra) in the MAGMA-Style, and the variables
-               in the corresponding free algebra
-        Output: A Polynomial in the Letterplace Style (with their positions as
-                arguments)
-        :param      poly: The polynomial given in MAGMA-Style
-        :type       poly: string
-        :param variables: A list containing the occurring variables.
-        :type  variables: list
-        """
-        result = ""
-        plusSplit = poly.split("+")
-        for p in plusSplit:
-            minusSplit = p.split("-")
-            for ms in minusSplit:
-                monomials = ms.split("*")
-                for m in monomials:
-                    if m.strip() not in variables: #Coefficient
-                        result += m+"*"
-                        continue
-                    m = m.strip()+"(1)"
-                    result += m.strip()+"*"
-                result = result[:-1] #one * too much
-                result += "-"
-            result = result[:-1]
-            result += "+"
-        result = result[:-1]
-        return result

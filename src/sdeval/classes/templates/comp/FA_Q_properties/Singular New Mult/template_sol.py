@@ -148,9 +148,9 @@ def extractSolution(outpString):
         primeness += " (error)"
 
     faGBSol = solStrSplit[6].split(',')
-    faGBSol = map(lambda x: convertFromLetterplace(x.strip()),faGBSol)
+    faGBSol = map(lambda x: x.strip(),faGBSol)
     originalGenerators = solStrSplit[9].split(',')
-    originalGenerators = map(lambda x: convertFromLetterplace(x.strip()),originalGenerators)
+    originalGenerators = map(lambda x: x.strip(),originalGenerators)
     variables = solStrSplit[7].split(',')
     upToDeg = solStrSplit[8]
     #From here on, we can assume that we are dealing with a valid
@@ -209,39 +209,4 @@ def extractSolution(outpString):
         errorCountNode = tempNode.appendChild(result.createElement("errors"))
         errorCountNode.appendChild(result.createTextNode(str(errorCount)))
     return result.toprettyxml("  ")
-
-#--------------------------------------------------
-#----------------Help Functions--------------------
-#--------------------------------------------------
-
-def convertFromLetterplace(inpPoly):
-    """
-    This function converts a string representing a polynomial in Letterplace form
-    into a polynomial without the position indicators. For example::
-
-      2*x(1)*y(2) + z(1)
-
-    will be converted into::
-
-      2*x*y + z
-
-    We assume that the input is typed correctly.
-
-    :param inpPoly: The polynomial in letterplace form
-    :type  inpPoly: str
-    :returns: The polynomial in Magma-form
-    :rtype: str
-    """
-    result = ""
-    plusSplit = inpPoly.split("+")
-    for p in plusSplit:
-        minusSplit = p.split("-")
-        for ms in minusSplit:
-            monomials = ms.split("*")
-            monomials = map(lambda x: re.sub(r"\([0-9]+\)","",x),monomials)
-            result += ("*".join(monomials)) + "-"
-        result = result[:-1]
-        result += "+"
-    result = result[:-1]
-    return result
 
