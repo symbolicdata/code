@@ -26,7 +26,7 @@ def generateCode(vars, basis, uptoDeg):
     result += "LIB \"freegb.lib\";\n"
     result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
     result += "int upToDeg = %i;\n" % uptoDeg
-    result += "def R = makeLetterplaceRing(degree_bound);\nsetring(R);\n"
+    result += "def R = makeLetterplaceRing(upToDeg);\nsetring(R);\n"
     result += "ideal _Id = %s;\n" % ",\n".join(v for v in basis)
     result += "option(prot);\noption(redTail);\noption(redSB);\n"
     result += "ideal _IdSTD = std(_Id);\n"
