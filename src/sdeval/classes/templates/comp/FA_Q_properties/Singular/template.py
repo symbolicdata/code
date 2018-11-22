@@ -25,18 +25,18 @@ def generateCode(vars, basis, uptoDeg):
     result = ""
     result += "LIB \"fpaprops.lib\";\n"
     result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
-    result += "int d = %i;\n" % uptoDeg
-    result += "def R = makeLetterplaceRing(d);\n setring(R);\n"
-    result += "ideal I = %s;\n" % ",\n".join(v for v in basis)
+    result += "int upToDeg = %i;\n" % uptoDeg
+    result += "def R = makeLetterplaceRing(degree_bound);\nsetring(R);\n"
+    result += "ideal _Id = %s;\n" % ",\n".join(v for v in basis)
     result += "option(prot);\noption(redTail);\noption(redSB);\n"
-    result += "ideal J = letplaceGBasis(I);\n"
-    result += "int gkDim = lpGkDim(J);\n"
+    result += "ideal _IdSTD = std(_Id);\n"
+    result += "int gkDim = lpGkDim(_IdSTD);\n"
     result += "int kDim = 0;\n"
-    result += "if(gkDim == 0) {kDim = lpKDim(J);}\n"
-    result += "int glDimBound = lpGlDimBound(J);\n"
-    result += "int noetherian = lpNoetherian(J);\n"
-    result += "int semiPrimeness = lpIsSemiPrime(J);\n"
-    result += "int primeness = lpIsPrime(J);\n"
+    result += "if(gkDim == 0) {kDim = lpKDim(_IdSTD);}\n"
+    result += "int glDimBound = lpGlDimBound(_IdSTD);\n"
+    result += "int noetherian = lpNoetherian(_IdSTD);\n"
+    result += "int semiPrimeness = lpIsSemiPrime(_IdSTD);\n"
+    result += "int primeness = lpIsPrime(_IdSTD);\n"
     result += "print(\"=====Solution Begin=====\");\n"
     result += "print (gkDim, \"%s\");\n"
     result += "print (kDim, \"%s\");\n"
@@ -44,10 +44,10 @@ def generateCode(vars, basis, uptoDeg):
     result += "print (noetherian, \"%s\");\n"
     result += "print (semiPrimeness, \"%s\");\n"
     result += "print (primeness, \"%s\");\n"
-    result += "print (J, \"%s\");\n"
+    result += "print (_IdSTD, \"%s\");\n"
     result += "print (varstr(r), \"%s\");\n"
-    result += "print (d, \"%s\");\n"
-    result += "print (I, \"%s\");\n"
+    result += "print (upToDeg, \"%s\");\n"
+    result += "print (_Id, \"%s\");\n"
     result += "print(\"=====Solution End=====\");$;"
     return result
 

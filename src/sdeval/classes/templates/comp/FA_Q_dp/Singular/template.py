@@ -25,16 +25,16 @@ def generateCode(vars, basis, uptoDeg):
     result = ""
     result += "LIB \"freegb.lib\";\n"
     result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
-    result += "int d = %i;\n" % uptoDeg
-    result += "def R = makeLetterplaceRing(d);\n setring(R);\n"
-    result += "ideal I = %s;\n" % ",\n".join(v for v in basis)
+    result += "int upToDeg = %i;\n" % uptoDeg
+    result += "def R = makeLetterplaceRing(degree_bound);\nsetring(R);\n"
+    result += "ideal _Id = %s;\n" % ",\n".join(v for v in basis)
     result += "option(prot);\noption(redTail);\noption(redSB);\n"
-    result += "ideal J = letplaceGBasis(I);\n"
+    result += "ideal _IdSTD = std(_Id);\n"
     result += "print(\"=====Solution Begin=====\");\n"
-    result += "print (J, \"%s\");\n"
+    result += "print (_IdSTD, \"%s\");\n"
     result += "print (varstr(r), \"%s\");\n"
-    result += "print (d, \"%s\");\n"
-    result += "print (I, \"%s\");\n"
+    result += "print (upToDeg, \"%s\");\n"
+    result += "print (_Id, \"%s\");\n"
     result += "print(\"=====Solution End=====\");"
     result += "$;"
     return result
