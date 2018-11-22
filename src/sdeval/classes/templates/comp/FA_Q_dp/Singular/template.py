@@ -27,14 +27,14 @@ def generateCode(vars, basis, uptoDeg):
     result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
     result += "int upToDeg = %i;\n" % uptoDeg
     result += "def R = makeLetterplaceRing(upToDeg);\nsetring(R);\n"
-    result += "ideal _Id = %s;\n" % ",\n".join(v for v in basis)
+    result += "ideal Id = %s;\n" % ",\n".join(v for v in basis)
     result += "option(prot);\noption(redTail);\noption(redSB);\n"
-    result += "ideal _IdSTD = std(_Id);\n"
+    result += "ideal IdSTD = std(Id);\n"
     result += "print(\"=====Solution Begin=====\");\n"
-    result += "print (_IdSTD, \"%s\");\n"
+    result += "print (IdSTD, \"%s\");\n"
     result += "print (varstr(r), \"%s\");\n"
     result += "print (upToDeg, \"%s\");\n"
-    result += "print (_Id, \"%s\");\n"
+    result += "print (Id, \"%s\");\n"
     result += "print(\"=====Solution End=====\");"
     result += "$;"
     return result
