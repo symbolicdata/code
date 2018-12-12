@@ -58,7 +58,7 @@ quit;"""
         basis=['x1+x2','x3*x4-x2*x1','x1*x2*x3*x4']
         uptoDeg = 10;
         expectedString = """LIB "freegb.lib";
-ring r = 0,(x1,x2,x3,x4),dp;
+ring r = 0,(x1,x2,x3,x4),Dp;
 int d = 10;
 def R = makeLetterplaceRing(d);
  setring(R);

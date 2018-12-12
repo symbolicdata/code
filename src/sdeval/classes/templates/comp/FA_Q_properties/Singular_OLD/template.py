@@ -24,7 +24,7 @@ def generateCode(vars, basis, uptoDeg):
     """
     result = ""
     result += "LIB \"fpaprops.lib\";\n"
-    result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
+    result += "ring r = 0,(%s),Dp;\n" % ",".join(vars)
     result += "int d = %i;\n" % uptoDeg
     result += "def R = makeLetterplaceRing(d);\n setring(R);\n"
     result += "ideal I = %s;\n" % ",\n".join(FAPolyToSingularStyle(v,vars) for v in basis)

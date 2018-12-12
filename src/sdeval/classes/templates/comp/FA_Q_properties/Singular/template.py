@@ -24,7 +24,7 @@ def generateCode(vars, basis, uptoDeg):
     """
     result = ""
     result += "LIB \"fpaprops.lib\";\n"
-    result += "ring r = 0,(%s),dp;\n" % ",".join(vars)
+    result += "ring r = 0,(%s),Dp;\n" % ",".join(vars)
     result += "int upToDeg = %i;\n" % uptoDeg
     result += "def R = makeLetterplaceRing(upToDeg);\nsetring(R);\n"
     result += "ideal Id = %s;\n" % ",\n".join(v for v in basis)
